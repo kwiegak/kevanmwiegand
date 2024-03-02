@@ -21,5 +21,5 @@
   },
   "include": [
     "src"
-  ]
+, "src/components/home/HomePage.test.tsx", "src/components/home/HomePage.tsx"  ]
 }
