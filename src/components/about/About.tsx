@@ -1,17 +1,17 @@
 import React, { FC, useState, useEffect  } from 'react';
-// import styles from './HomePage.module.css';
+// import styles from './About.module.css';
 
-interface HomePageProps {}
+interface AboutProps {}
 const initialFormState = { name: "", description: "", image: "" };
-const HomePage: FC<HomePageProps> = () => (
+const About: FC<AboutProps> = () => (
   <div>
     <div>
       <div className="jumbotron">
         <h1>Kevan M. Wiegand</h1>
-        <p>Software Engineer, Author, and Musician.</p>
+        <p>About me</p>
       </div>
     </div>
   </div>
 );
 
-export default HomePage;
+export default About;
