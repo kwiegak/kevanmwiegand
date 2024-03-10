@@ -17,9 +17,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "typeRoots" : ["node_modules/@types", "src/types"]
   },
   "include": [
     "src"
-, "src/components/home/HomePage.test.tsx", "src/components/home/HomePage.tsx"  ]
+, "src/components/home/HomePage.test.tsx"
+, "src/components/home/HomePage.tsx"
+, "globals.d.ts" ]
 }

@@ -13,8 +13,8 @@ function App() {
         <Routes>
         <Route index element = {<HomePage/>}/>
         <Route path = "/about" element = {<About/>}/>
-        <Route path = "/photos" element = {<Photos/>}/>
-        </Routes>
+        <Route path="/photos" element={<Photos />} />
+      </Routes>        
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import React, { FC, useState, useEffect  } from 'react';
-// import styles from './Photos.module.css';
+import styles from './Photos.module.css';
 
 interface PhotosProps {}
 const initialFormState = { name: "", description: "", image: "" };
 const Photos: FC<PhotosProps> = () => (
-  <div>
+  <div className={styles.Photos}>
     <div>
       <div className="jumbotron">
         <h1>See my latest photography</h1>
