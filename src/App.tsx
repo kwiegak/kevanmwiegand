@@ -1,10 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import './App.css';
 import { Routes, Route } from "react-router-dom";
-import HomePage from './components/home/HomePage';
-import About from './components/about/About';
-import Header from './components/common/Header';
-import Photos from './components/photos/Photos';
+import HomePage from './Components/home/HomePage';
+import About from './Components/about/About';
+import Header from './Components/common/Header';
+import Photos from './Components/photos/Photos';
 
 function App() {
   return (
