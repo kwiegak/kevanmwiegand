@@ -22,8 +22,8 @@
   },
   "include": [
     "src"
-, "src/Components/home/HomePage.test.tsx"
-, "src/Components/home/HomePage.tsx"
+, "src/components/home/HomePage.test.tsx"
+, "src/components/home/HomePage.tsx"
 , "globals.d.ts"
 , "types/index.d.ts" ]
 }
