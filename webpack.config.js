@@ -19,6 +19,9 @@ const config = {
     open: true,
     host: "localhost",
   },
+  stats: {
+    children: true
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: "index.tsx",
