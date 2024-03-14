@@ -14,6 +14,7 @@ const config = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
+    filename: 'app.bundle.js'
   },
   devServer: {
     open: true,
@@ -26,9 +27,6 @@ const config = {
     new HtmlWebpackPlugin({
       template: "./src/index.tsx",
     }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
     rules: [
@@ -43,11 +41,13 @@ const config = {
         test: /\.tsx?$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+        include: path.join(__dirname, '/src'),
       }
     ],
   },
-    resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+  resolve: {
+        modules: ['node_modules'],
+        extensions: ['.ts', '.tsx', '.js', '.json']
   }
 };
 
