@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "typeRoots" : ["node_modules/@types", "src/types"]
   },
   "include": [
@@ -25,5 +25,8 @@
   , "src/components/home/HomePage.test.tsx"
   , "src/components/home/HomePage.tsx"
   , "globals.d.ts"
-  , "types/index.d.ts" ]
+  , "types/index.d.ts"
+  , "**/*.ts"
+  , "**/*.tsx" ]
 }
+

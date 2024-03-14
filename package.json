@@ -26,12 +26,7 @@
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "build": "webpack --mode=production --node-env=production",
-    "build:dev": "webpack --mode=development",
-    "build:prod": "webpack --mode=production --node-env=production",
-    "watch": "webpack --watch",
-    "serve": "webpack serve"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -52,9 +47,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
-    "@webpack-cli/generators": "^3.0.7",
+    "@types/react": "^18.2.66",
     "autoprefixer": "^10.4.18",
     "babel-loader": "^9.1.3",
     "css-loader": "^6.10.0",
@@ -65,10 +58,7 @@
     "postcss-loader": "^8.1.1",
     "prettier": "^2.7.1",
     "style-loader": "^3.3.4",
-    "ts-loader": "^9.5.1",
-    "webpack": "^5.90.3",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "ts-loader": "^9.5.1"
   },
   "description": "My webpack project",
   "main": "postcss.config.js",
