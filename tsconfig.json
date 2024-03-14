@@ -16,14 +16,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react",
     "typeRoots" : ["node_modules/@types", "src/types"]
   },
   "include": [
     "src"
-, "src/components/home/HomePage.test.tsx"
-, "src/components/home/HomePage.tsx"
-, "globals.d.ts"
-, "types/index.d.ts" ]
+  , "src/components/home/HomePage.test.tsx"
+  , "src/components/home/HomePage.tsx"
+  , "globals.d.ts"
+  , "types/index.d.ts" ]
 }

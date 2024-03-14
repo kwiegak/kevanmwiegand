@@ -24,7 +24,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.tsx",
+      template: "./src/index.tsx",
     }),
 
     // Add your plugins here
@@ -33,23 +33,26 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.js$|jsx/,
-        loader: "babel-loader",
-      },
-      {
         test: /\.css$/i,
         use: [stylesHandler, "css-loader", "postcss-loader"],
       },
       {
-        test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
-        type: "asset",
+          loader: "file-loader",
       },
-      { test: /\\.(png|jp(e*)g|svg|gif)$/, use: ['file-loader'], }
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      }
     ],
   },
+    resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+      output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  }
 };
 
 module.exports = () => {
