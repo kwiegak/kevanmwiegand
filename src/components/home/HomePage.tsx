@@ -7,15 +7,11 @@ import Card from 'react-bootstrap/Card';
 
 interface HomePageProps { }
 
-function link(){
-  window.open('http://www.google.com');
-}
-
 const HomePage: FC<HomePageProps> = (useState) => (
   <div>
     <div>
     <section className={styles.landingPageImage}>
-      <Image style={{ width: '25rem', height: '10rem' }} src="./images/DSC02237.JPG"/>
+      <Image style={{ width: '25rem', height: '10rem' }} src="./images/DSC02237.jpg"/>
     </section>
     <div className="jumbotron">
         <h1 style={{ color: 'white' }}>Kevan M. Wiegand</h1>
