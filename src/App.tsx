@@ -12,7 +12,7 @@ function App() {
         <Routes>
         <Route index element = {<HomePage/>}/>
         <Route path="/photos" element={<Photos />} />
-      </Routes>        
+      </Routes>   
     </div>
   );
 }
