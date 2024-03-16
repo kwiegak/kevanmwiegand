@@ -6,4 +6,6 @@
     justify-content: center;
     min-height: 100vh;
     background-color: black;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
