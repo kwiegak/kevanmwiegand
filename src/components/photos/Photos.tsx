@@ -3,9 +3,9 @@ import styles from './Photos.module.css';
 import PhotoAlbum from "react-photo-album";
 
 const photos = [
-  { src: "./images/DSC00615.jpg", width: 1600, height: 900 },
-  { src: "./images/DSC02241.jpg", width: 1600, height: 900 },
-  { src: "./images/DSC01804.jpg", width: 1600, height: 900 },
+  { src: "./images/1.jpg", width: 1600, height: 900 },
+  { src: "./images/2.jpg", width: 1600, height: 900 },
+  { src: "./images/4.jpg", width: 1600, height: 900 },
 ];
 
 interface PhotosProps {}

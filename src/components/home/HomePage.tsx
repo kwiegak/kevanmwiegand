@@ -11,7 +11,7 @@ const HomePage: FC<HomePageProps> = (useState) => (
   <div>
     <div>
     <section className={styles.landingPageImage}>
-      <Image style={{ width: '25rem', height: '10rem' }} src="./images/DSC02237.jpg"/>
+      <Image style={{ width: '25rem', height: '10rem' }} src="./images/3.jpg"/>
     </section>
     <div className="jumbotron">
         <h1 style={{ color: 'white' }}>Kevan M. Wiegand</h1>
