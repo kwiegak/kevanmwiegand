@@ -10,8 +10,8 @@ function App() {
     <div className="App">
         <Header/>
         <Routes>
-        <Route index element = {<HomePage/>}/>
-        <Route path="/photos" element={<Photos />} />
+          <Route path='*' element= {<HomePage/>} />
+          <Route path="/photos" element={<Photos />} />
       </Routes>   
     </div>
   );
