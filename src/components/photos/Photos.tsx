@@ -2,6 +2,8 @@ import { FC } from 'react';
 import styles from './Photos.module.css';
 import PhotoAlbum from "react-photo-album";
 import { Amplify } from 'aws-amplify';
+import API from '@aws-amplify/api';
+import Storage from '@aws-amplify/storage'
 
 const photos = [
   { src: "./images/11.jpg", width: 1600, height: 900 },
