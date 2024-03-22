@@ -1,4 +1,22 @@
 {
+  "api": {
+    "kevanmwiegand": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 7
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  },
   "auth": {
     "kevanmwiegand94ab3cf5": {
       "customAuth": false,
@@ -27,7 +45,30 @@
       "service": "Cognito"
     }
   },
+  "hosting": {
+    "amplifyhosting": {
+      "lastPushTimeStamp": "2024-03-21T14:49:01.794Z",
+      "service": "amplifyhosting",
+      "type": "cicd"
+    }
+  },
   "parameters": {
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
     "AMPLIFY_storage_kevanmwiegand231ec7f2_bucketName": {
       "usedBy": [
         {
