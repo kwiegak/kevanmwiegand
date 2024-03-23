@@ -2,13 +2,15 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './Photos.module.css';
 import PhotoAlbum from "react-photo-album";
 import { Amplify } from 'aws-amplify';
-import API from '@aws-amplify/api';
+import { generateClient }  from '@aws-amplify/api';
 import Storage from '@aws-amplify/storage'
 import { listTodos } from "../../graphql/queries";
 import {
-  createTodo as createNoteMutation,
-  deleteTodo as deleteNoteMutation,
+  createTodo,
+  deleteTodo
 } from "../../graphql/mutations";
+
+const client = generateClient();
 
 const photos = [
   { src: "./images/11.jpg", width: 1600, height: 900 },
@@ -16,8 +18,15 @@ const photos = [
   { src: "./images/44.jpg", width: 1600, height: 900 },
 ];
 
-async function fetchTodos() {
-  console.log("Test");
+async function writeTodo() {
+    const apiData = await client.graphql({
+      query: createTodo,
+      variables: {
+        input: {
+          name: 'My first todo!'
+        }
+      }
+    });
   }
 
 interface PhotosProps {}
@@ -25,7 +34,7 @@ interface PhotosProps {}
 const Photos: FC<PhotosProps> = () => {
 
   React.useEffect(() => {
-    fetchTodos();
+    writeTodo();
   }, [])
 
     return (
