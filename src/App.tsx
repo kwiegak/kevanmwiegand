@@ -7,7 +7,15 @@ import Photos from './components/photos/Photos';
 import { Amplify } from 'aws-amplify';
 import config from './amplifyconfiguration.json';
 
-Amplify.configure(config, {ssr: true});
+Amplify.configure(config, {
+  API: {
+    GraphQL:  {
+      headers: async () => ({
+        'My-Custom-Header': 'my value'
+      })
+    }
+  }
+});
 
 function App() {
   return (
