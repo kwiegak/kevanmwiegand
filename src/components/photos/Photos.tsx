@@ -29,14 +29,20 @@ async function writeTodo() {
         }
       }
     });
-  }
+}
+
+async function readTodo() {
+  const result = await client.graphql({ query: listTodos });
+  console.log(result);
+}
+
 
 interface PhotosProps {}
 
 const Photos: FC<PhotosProps> = () => {
 
   React.useEffect(() => {
-    writeTodo();
+    readTodo();
   }, [])
 
     return (
