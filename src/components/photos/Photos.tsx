@@ -23,7 +23,9 @@ async function writeTodo() {
       query: createTodo,
       variables: {
         input: {
-          name: 'My first todo!'
+          id: "1",
+          name: "My first todo!",
+          description: "Test"
         }
       }
     });
