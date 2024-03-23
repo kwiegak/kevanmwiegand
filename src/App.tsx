@@ -7,7 +7,7 @@ import Photos from './components/photos/Photos';
 import { Amplify } from 'aws-amplify';
 import config from './amplifyconfiguration.json';
 
-Amplify.configure(config);
+Amplify.configure(config, {ssr: true});
 
 function App() {
   return (
