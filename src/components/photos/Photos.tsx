@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styles from './Photos.module.css';
 import PhotoAlbum from "react-photo-album";
 import { Amplify } from 'aws-amplify';
@@ -16,25 +16,31 @@ const photos = [
   { src: "./images/44.jpg", width: 1600, height: 900 },
 ];
 
-useEffect(() => {  
-    fetchTodos();
-}, []);
-
 async function fetchTodos() {
   console.log("Test");
   }
 
 interface PhotosProps {}
 
-const Photos: FC<PhotosProps> = () => (
-  <div className={styles.Photos}>
-    <div>
-      <div className="jumbotron">
-        <h1 style={{ color: 'white' }} >Latest Photos</h1>
-        <PhotoAlbum layout="rows" photos={photos} />
+const Photos: FC<PhotosProps> = () => {
+
+  React.useEffect(() => {
+    fetchTodos();
+  }, [])
+
+    return (
+    <>
+      <div className={styles.Photos}>
+        <div>
+          <div className="jumbotron">
+            <h1 style={{ color: 'white' }} >Latest Photos</h1>
+            <PhotoAlbum layout="rows" photos={photos} />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-);
+    </>
+    
+  );
+}
 
 export default Photos;
