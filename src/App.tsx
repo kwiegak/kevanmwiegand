@@ -4,6 +4,10 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from './components/home/HomePage';
 import Header from './components/common/Header';
 import Photos from './components/photos/Photos';
+import { Amplify } from 'aws-amplify';
+import config from './amplifyconfiguration.json';
+
+Amplify.configure(config);
 
 function App() {
   return (
