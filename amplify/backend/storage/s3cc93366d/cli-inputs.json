@@ -1,0 +1,18 @@
+{
+  "resourceName": "s3cc93366d",
+  "policyUUID": "cc93366d",
+  "bucketName": "kevanmwiegand6e4810d7326343feb3aeb97d5893baac",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
