@@ -35,12 +35,17 @@ async function readTodo() {
   console.log(result);
 }
 
+async function getS3() {
+  s3.
+}
+
 
 interface PhotosProps {}
 
 const Photos: FC<PhotosProps> = () => {
 
   React.useEffect(() => {
+    getS3();
     writeTodo();
     readTodo();
   }, [])

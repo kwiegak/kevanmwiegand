@@ -61,5 +61,46 @@
       "service": "Cognito-UserPool-Groups"
     }
   },
-  "storage": {}
+  "function": {
+    "S3Trigger6ce80d02": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_S3Trigger6ce80d02_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger6ce80d02"
+        }
+      ]
+    },
+    "AMPLIFY_function_S3Trigger6ce80d02_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger6ce80d02"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "mys3bucket": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn",
+            "LambdaExecutionRole"
+          ],
+          "category": "function",
+          "resourceName": "S3Trigger6ce80d02"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
 }

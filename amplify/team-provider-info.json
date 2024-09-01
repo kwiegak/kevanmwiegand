@@ -18,6 +18,15 @@
       },
       "api": {
         "todo": {}
+      },
+      "function": {
+        "S3Trigger6ce80d02": {
+          "deploymentBucketName": "amplify-amplifyf14cd66924404-staging-42b41-deployment",
+          "s3Key": "amplify-builds/S3Trigger6ce80d02-676b744b42566c446470-build.zip"
+        }
+      },
+      "storage": {
+        "mys3bucket": {}
       }
     }
   }

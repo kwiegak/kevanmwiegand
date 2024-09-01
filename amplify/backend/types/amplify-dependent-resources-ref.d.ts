@@ -20,5 +20,20 @@ export type AmplifyDependentResourcesAttributes = {
       "adminGroupRole": "string",
       "developerGroupRole": "string"
     }
+  },
+  "function": {
+    "S3Trigger6ce80d02": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    }
+  },
+  "storage": {
+    "mys3bucket": {
+      "BucketName": "string",
+      "Region": "string"
+    }
   }
 }
