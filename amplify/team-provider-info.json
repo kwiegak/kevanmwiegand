@@ -12,9 +12,6 @@
       "AmplifyAppId": "d1jrd40lpbtiuh"
     },
     "categories": {
-      "api": {
-        "kevanmwiegand": {}
-      },
       "auth": {
         "kevanmwiegand7e5540f0": {},
         "userPoolGroups": {}
