@@ -16,7 +16,8 @@
         "kevanmwiegand": {}
       },
       "auth": {
-        "kevanmwiegand7e5540f0": {}
+        "kevanmwiegand7e5540f0": {},
+        "userPoolGroups": {}
       },
       "storage": {
         "s3cc93366d": {}
