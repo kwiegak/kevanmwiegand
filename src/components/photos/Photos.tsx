@@ -36,7 +36,7 @@ async function readTodo() {
 }
 
 async function getS3() {
-  s3.
+  console.log("s3!");
 }
 
 
