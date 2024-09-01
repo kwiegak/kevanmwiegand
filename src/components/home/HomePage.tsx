@@ -16,7 +16,7 @@ const HomePage: FC<HomePageProps> = (useState) => (
       </section>
       
     <div className="jumbotron">
-        <h1 style={{ color: 'white' }}>Kevan M. Wiegand</h1>
+        <h1 style={{ color: 'white' }}>Kevan Mathias Wiegand</h1>
         <p style={{ color: 'white' }}>Software Engineer, Author, and Musician.</p>
       </div>
       
