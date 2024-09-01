@@ -20,11 +20,5 @@ export type AmplifyDependentResourcesAttributes = {
       "adminGroupRole": "string",
       "developerGroupRole": "string"
     }
-  },
-  "storage": {
-    "s3cc93366d": {
-      "BucketName": "string",
-      "Region": "string"
-    }
   }
 }
