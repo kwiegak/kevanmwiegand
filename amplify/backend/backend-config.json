@@ -61,11 +61,5 @@
       "service": "Cognito-UserPool-Groups"
     }
   },
-  "storage": {
-    "s3cc93366d": {
-      "dependsOn": [],
-      "providerPlugin": "awscloudformation",
-      "service": "S3"
-    }
-  }
+  "storage": {}
 }
