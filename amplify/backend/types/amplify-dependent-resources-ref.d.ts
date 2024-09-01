@@ -1,8 +1,9 @@
 export type AmplifyDependentResourcesAttributes = {
   "api": {
-    "kevanmwiegand": {
+    "todo": {
       "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string"
+      "GraphQLAPIIdOutput": "string",
+      "GraphQLAPIKeyOutput": "string"
     }
   },
   "auth": {

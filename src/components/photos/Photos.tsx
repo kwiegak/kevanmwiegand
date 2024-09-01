@@ -42,7 +42,7 @@ interface PhotosProps {}
 const Photos: FC<PhotosProps> = () => {
 
   React.useEffect(() => {
-    //readTodo();
+    readTodo();
   }, [])
 
     return (
