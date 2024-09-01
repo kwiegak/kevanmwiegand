@@ -20,13 +20,12 @@ const photos = [
 
 async function writeTodo() {
     const apiData = await client.graphql({
-      query: createTodo,
-      variables: {
-        input: {
-          id: "1",
-          name: "My first todo!",
-          description: "Test"
-        }
+        query: createTodo,
+        variables: {
+          input: {
+            name: "My first todo!",
+            description: "Test"
+          }
       }
     });
 }
@@ -42,6 +41,7 @@ interface PhotosProps {}
 const Photos: FC<PhotosProps> = () => {
 
   React.useEffect(() => {
+    writeTodo();
     readTodo();
   }, [])
 
