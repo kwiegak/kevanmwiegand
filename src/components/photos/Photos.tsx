@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import styles from './Photos.module.css';
 import PhotoAlbum from "react-photo-album";
-import { Amplify } from 'aws-amplify';
 import { generateClient }  from '@aws-amplify/api';
-import Storage from '@aws-amplify/storage'
+import { getUrl, list } from '@aws-amplify/storage'
+import { StorageImage, StorageManager } from '@aws-amplify/ui-react-storage';
 import { listTodos } from "../../graphql/queries";
 import {
   createTodo,
@@ -11,12 +11,6 @@ import {
 } from "../../graphql/mutations";
 
 const client = generateClient();
-
-const photos = [
-  { src: "./images/11.jpg", width: 1600, height: 900 },
-  { src: "./images/22.jpg", width: 1600, height: 900 },
-  { src: "./images/44.jpg", width: 1600, height: 900 },
-];
 
 async function writeTodo() {
     const apiData = await client.graphql({
@@ -35,33 +29,34 @@ async function readTodo() {
   console.log(result);
 }
 
-async function getS3() {
-  console.log("s3!");
+async function getAllImageFilePathsFromS3Bucket() {  
+  let filepaths: Array<string> = [];
+  const result = await list({ path: 'public/' });
+  let listOfS3Items = result.items;
+  listOfS3Items.forEach((x) => {
+    if (x.size)
+    filepaths.push(x.path);
+  })
+  return filepaths
 }
-
 
 interface PhotosProps {}
 
 const Photos: FC<PhotosProps> = () => {
-
+  const [images, setImages] = useState<string[]>([])
+  
   React.useEffect(() => {
-    getS3();
-    writeTodo();
-    readTodo();
+    getAllImageFilePathsFromS3Bucket().then(x => {
+      setImages(x);
+    });
+    //writeTodo();
+    //readTodo();
   }, [])
-
     return (
-    <>
-      <div className={styles.Photos}>
-        <div>
-          <div className="jumbotron">
-            <h1 style={{ color: 'white' }} >Latest Photos</h1>
-            <PhotoAlbum layout="rows" photos={photos} />
-          </div>
-        </div>
-      </div>
-    </>
-    
+      <>
+
+        { images.map(file => <StorageImage alt="photo-item" path={file} key={file} />) }          
+      </>
   );
 }
 
