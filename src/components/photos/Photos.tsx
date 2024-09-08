@@ -1,6 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './Photos.module.css';
-import PhotoAlbum from "react-photo-album";
 import { generateClient }  from '@aws-amplify/api';
 import { getUrl, list } from '@aws-amplify/storage'
 import { StorageImage, StorageManager } from '@aws-amplify/ui-react-storage';
@@ -51,11 +50,21 @@ const Photos: FC<PhotosProps> = () => {
     });
     //writeTodo();
     //readTodo();
+
   }, [])
     return (
       <>
-
-        { images.map(file => <StorageImage alt="photo-item" path={file} key={file} />) }          
+        {
+          images.map(file =>
+            <StorageImage
+              width="100%"
+              height="100%"
+              objectFit="cover"
+              objectPosition="50% 50%"
+              alt="photo-item"
+              path={file} key={file} />
+          )
+        }     
       </>
   );
 }
