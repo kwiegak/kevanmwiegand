@@ -1,24 +1,28 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import './App.css';
+import { Component } from 'react';
 import { Routes, Route } from "react-router-dom";
-import HomePage from './components/home/HomePage';
-import Header from './components/common/Header';
-import Photos from './components/photos/Photos';
 import { Amplify } from 'aws-amplify';
+import Header from './components/common/Header';
+import Dallas from './components/dallas/Dallas';
 import config from './amplifyconfiguration.json';
+import './App.css';
+import RedHot from './components/redhotchilipeppers/RedHot';
 
 Amplify.configure(config);
 
-function App() {
-  return (
-    <div className="App">
-        <Header/>
-        <Routes>
-          <Route path='*' element= {<HomePage/>} />
-          <Route path="/photos" element={<Photos />} />
-      </Routes>   
-    </div>
-  );
+
+class App extends Component {
+
+  render() {
+    return (
+      <div className="App">
+         <Header/>
+         <Routes>
+           <Route path='*' element= {<RedHot/>} />
+           <Route path="/dallas" element={<Dallas />} />
+        </Routes>
+      </div>
+    );
+  }
 }
 
 export default App;

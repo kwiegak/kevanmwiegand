@@ -9,8 +9,8 @@ interface HeaderProps {}
 const Header: FC<HeaderProps> = () => (
   <Navbar bg="dark" data-bs-theme="dark" fixed='top'>
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="photos">Photos</Nav.Link>
+            <Nav.Link href="/">Red Hot Chili Peppers</Nav.Link>
+            <Nav.Link href="dallas">Dallas</Nav.Link>
           </Nav>
       </Navbar>
 );
