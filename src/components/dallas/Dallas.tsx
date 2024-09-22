@@ -5,7 +5,7 @@ import { StorageImage, StorageManager } from '@aws-amplify/ui-react-storage';
 
 async function getAllImageFilePathsFromS3Bucket() {  
   let filepaths: Array<string> = [];
-  const result = await list({ path: 'public/' });
+  const result = await list({ path: 'public/dallas' });
   let listOfS3Items = result.items;
   listOfS3Items.forEach((x) => {
     if (x.size)
@@ -27,7 +27,7 @@ const Dallas: FC<DallasProps> = () => {
       
     });
   }, []);
-  
+
     return (
       <>
           {
