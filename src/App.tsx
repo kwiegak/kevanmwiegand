@@ -9,6 +9,7 @@ import config from './amplifyconfiguration.json';
 import './App.css';
 import HomePage from './components/home/HomePage';
 import Germany from './components/germany/Germany';
+import Misc from './components/misc/Misc';
 
 Amplify.configure(config);
 
@@ -22,6 +23,7 @@ class App extends Component {
         <Routes>
           <Route path='/kevanwiegand' element={<HomePage />} />
           <Route path='/*' element={<NewYork />} />
+          <Route path='/misc' element={<Misc />} />
           <Route path='/nyc' element={<NewYork />} />
           <Route path='/germany' element={<Germany />} />
           <Route path='/rhcp' element={<RedHot />} />
