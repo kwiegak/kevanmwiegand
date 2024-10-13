@@ -5,11 +5,11 @@ import { StorageImage, StorageManager } from '@aws-amplify/ui-react-storage';
 
 async function getAllImageFilePathsFromS3Bucket(path: string) {
     let filepaths: Array<string> = [];
-    let finalPath: string = 'public/' + path;
-    const result = await list({ path: finalPath });
+    let defaultPath: string = 'public/' + path;
+    const result = await list({ path: defaultPath });
     let listOfS3Items = shuffle(result.items);
     listOfS3Items.forEach((x) => {
-        if (finalPath.length > 0) {
+        if (x.length > defaultPath.length) {
             filepaths.push(x);
         }
     })
