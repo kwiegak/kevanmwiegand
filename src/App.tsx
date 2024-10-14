@@ -21,7 +21,6 @@ class App extends Component {
       <div className="App">
         <Header />
         <Routes>
-          <Route path='/kevanwiegand' element={<HomePage />} />
           <Route path='/*' element={<NewYork />} />
           <Route path='/misc' element={<Misc />} />
           <Route path='/nyc' element={<NewYork />} />
