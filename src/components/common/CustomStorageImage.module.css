@@ -1,21 +1,39 @@
 .gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 12px;
-    padding: 16px;
+    padding: 12px;
 }
 
 .imageWrapper {
     position: relative;
-    cursor: pointer;
     overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: transform 0.2s ease-in-out;
+    border-radius: 10px;
+    min-height: 140px;
+    background: #f3f3f3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.imageWrapper:hover {
-    transform: scale(1.03);
+.placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #eee, #f6f6f6, #eee);
+    background-size: 200% 100%;
+    animation: pulse 1.2s ease-in-out infinite;
+    border-radius: 10px;
+}
+
+@keyframes pulse {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .image {
@@ -23,12 +41,17 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0;
+    transition: opacity 260ms ease-in;
+}
+
+.image.visible {
+    opacity: 1;
 }
 
 .loading {
     text-align: center;
-    font-size: 1.2rem;
-    padding: 16px;
+    padding: 8px;
     color: #666;
 }
 
@@ -37,28 +60,29 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.85);
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 1000;
+    justify-content: center;
+    z-index: 9999;
     cursor: zoom-out;
+}
+
+.modalPlaceholder {
+    width: 80%;
+    height: 60%;
+    background: #111;
+    opacity: 0.2;
+    border-radius: 8px;
 }
 
 .modalImage {
     max-width: 90%;
     max-height: 90%;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-    animation: fadeIn 0.2s ease-in-out;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 200ms ease-in;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.97);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+.modalImage.visible {
+    opacity: 1;
 }
