@@ -17,7 +17,7 @@ const Header: FC<HeaderProps> = () => (
         <NavDropdown.Item href="/nyc">New York City</NavDropdown.Item>
         <NavDropdown.Item href="/rhcp">Red Hot Chili Peppers</NavDropdown.Item>
       </NavDropdown>
-      <NavDropdown title="Kevan Wiegand" id="basic-nav-dropdown">
+      <NavDropdown title="@Kevan Wiegand" id="basic-nav-dropdown">
         <NavDropdown.Item onClick={() => window.open('https://www.linkedin.com/in/kevan-wiegand-0742b12ba/')}>Linkedin</NavDropdown.Item>
         <NavDropdown.Item onClick={() => window.open('https://www.youtube.com/channel/UCpE3knGP4Fh9YFXpD49c8iw')}>YouTube</NavDropdown.Item>
         <NavDropdown.Item onClick={() => window.open('https://www.github.com/kwiegak')}>GitHub</NavDropdown.Item>
