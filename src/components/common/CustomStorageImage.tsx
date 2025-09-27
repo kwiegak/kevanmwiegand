@@ -1,71 +1,84 @@
-import React, { FC, useState, useEffect } from 'react';
-import styles from './Photos.module.css';
-import { getUrl, list } from '@aws-amplify/storage'
-import { StorageImage, StorageManager } from '@aws-amplify/ui-react-storage';
+import React, { FC, useState, useEffect, useCallback } from "react";
+import { list } from "@aws-amplify/storage";
+import { StorageImage } from "@aws-amplify/ui-react-storage";
+import styles from "./CustomStorageImage.module.css";
 
-async function getAllImageFilePathsFromS3Bucket(path: string) {
-    let filepaths: Array<string> = [];
-    let defaultPath: string = 'public/' + path + "/";
-    const result = await list({ path: defaultPath });
-    let listOfS3Items = shuffle(result.items);
-    listOfS3Items.forEach((x) => {
-        if (x.length > defaultPath.length) {
-            filepaths.push(x);
-        }
-    })
-    return filepaths
+interface CustomStorageProps {
+    path: string;
 }
 
-function shuffle(array: Array<any>) {
-    let currentIndex = array.length;
-
-    while (currentIndex != 0) {
-
-        let randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        [array[currentIndex], array[randomIndex]] = [
-            array[randomIndex], array[currentIndex]];
+function shuffleArray<T>(array: T[]): T[] {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-
-    var randomizedArray = array.map(function (array) {
-        return array['path'];
-    });
-
-    return randomizedArray;
+    return arr;
 }
 
-interface CustomStorageProps { path: string }
-
-const CustomStorageImage: FC<CustomStorageProps> = (customPath) => {
-
+const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const [images, setImages] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const fetchImages = useCallback(async () => {
+        try {
+            setLoading(true);
+            const result = await list({
+                path: `public/${path}/`,
+
+            });
+            const filePaths = result.items
+                .map((item) => item.path)
+                .filter((p): p is string => !!p);
+            setImages(shuffleArray(filePaths));
+        } catch (error) {
+            console.error("Error fetching images from S3:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [path]);
 
     useEffect(() => {
-        getAllImageFilePathsFromS3Bucket(customPath.path).then(x => {
-            setImages(x);
-        });
-    }, []);
+        setImages([]); // reset when path changes
+        fetchImages();
+    }, [path, fetchImages]);
 
     return (
         <>
-            {
-                images.map((file) => {
-                    return (
+            {loading && <p className={styles.loading}>Loading...</p>}
+
+            <div className={styles.gallery}>
+                {images.map((file) => (
+                    <div
+                        key={file}
+                        className={styles.imageWrapper}
+                        onClick={() => setSelectedImage(file)}
+                    >
                         <StorageImage
-                            width="100%"
-                            height="100%"
-                            objectFit="cover"
-                            objectPosition="50% 50%"
+                            path={file}
                             alt="photo-item"
-                            path={file} key={file}
-                            validateObjectExistence={false} />
-                    )
-                })
-            }
+                            className={styles.image}
+                            loading="lazy"
+                            validateObjectExistence={false}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {/* Lightbox modal */}
+            {selectedImage && (
+                <div className={styles.modal} onClick={() => setSelectedImage(null)}>
+                    <StorageImage
+                        path={selectedImage}
+                        alt="Full Size"
+                        className={styles.modalImage}
+                        validateObjectExistence={false}
+                    />
+                </div>
+            )}
         </>
     );
-}
+};
 
 export default CustomStorageImage;
-

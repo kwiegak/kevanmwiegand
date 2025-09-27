@@ -1,18 +1,13 @@
-import React, { FC } from 'react';
-import styles from './Photos.module.css';
-import CustomStorageImage from '../common/CustomStorageImage';
+import React, { FC } from "react";
+import CustomStorageImage from "../common/CustomStorageImage";
 
-interface NewYorkProps { }
-
-const NewYork: FC<NewYorkProps> = () => {
+const NewYork: FC = () => {
   return (
     <>
-      {
-        <CustomStorageImage path='nyc'></CustomStorageImage>
-      }
+      <h1 style={{ textAlign: "center", margin: "16px 0" }}>New York Gallery</h1>
+      <CustomStorageImage path="nyc" />
     </>
   );
-}
+};
 
 export default NewYork;
-
