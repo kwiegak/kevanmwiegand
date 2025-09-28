@@ -8,7 +8,7 @@ const Misc: FC<MiscProps> = () => {
     return (
         <>
             {
-                <CustomStorageImage path='misc'></CustomStorageImage>
+                <CustomStorageImage path='all'></CustomStorageImage>
             }
         </>
     );
