@@ -21,11 +21,11 @@ class App extends Component {
       <div className="App">
         <Header />
         <Routes>
-          <Route path='/*' element={<NewYork />} />
-          <Route path='/misc' element={<Misc />} />
+          <Route path='/*' element={<Misc />} />
+          <Route path='/all' element={<Misc />} />
           <Route path='/nyc' element={<NewYork />} />
           <Route path='/germany' element={<Germany />} />
-          <Route path='/rhcp' element={<RedHot />} />
+          {/* <Route path='/rhcp' element={<RedHot />} /> */}
           <Route path="/dallas" element={<Dallas />} />
         </Routes>
       </div>
