@@ -10,12 +10,12 @@ import { list, getUrl } from "@aws-amplify/storage";
 import styles from "./CustomStorageImage.module.css";
 
 interface CustomStorageProps {
-    path: string; // e.g. "nyc"
+    path: string;
 }
 
 type ImageItem = {
-    fullKey: string;      // e.g. "public/nyc/img1.jpg"
-    thumbnailKey: string; // e.g. "public/thumbnails/nyc/img1.jpg" or same as fullKey if no thumbnail
+    fullKey: string;
+    thumbnailKey: string;
 };
 
 const PAGE_SIZE = 20;
@@ -28,24 +28,6 @@ function shuffleArray<T>(array: T[]): T[] {
     }
     return arr;
 }
-
-const tryListPrefixes = async (prefixes: string[]) => {
-    // try several prefixes (some environments expect "public/..." vs "thumbnails/...")
-    let lastResult: any = { items: [] };
-    for (const p of prefixes) {
-        try {
-            // your working code used list({ path: `public/${path}/` }), so keep that shape
-            // we call it with `path` property — if your env expects a different param, adjust accordingly
-            const r = await list({ path: p });
-            lastResult = r;
-            if (r?.items?.length) return r;
-        } catch (err) {
-            // swallow; try next prefix
-            lastResult = { items: [] };
-        }
-    }
-    return lastResult;
-};
 
 const ThumbnailTile: FC<{
     item: ImageItem;
@@ -80,12 +62,44 @@ const ThumbnailTile: FC<{
                     loading="lazy"
                     className={`${styles.image} ${loaded ? styles.visible : ""}`}
                     onLoad={() => setLoaded(true)}
-                    // small width/height attributes help layout shift
                     width="400"
                     height="300"
                 />
             )}
         </div>
+    );
+};
+
+const FullSizeImage: FC<{ fullKey: string }> = ({ fullKey }) => {
+    const [url, setUrl] = useState<string | null>(null);
+    const [loaded, setLoaded] = useState(false);
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            try {
+                const r = await getUrl({ key: fullKey });
+                if (mounted) setUrl(String(r?.url ?? r));
+            } catch (err) {
+                console.error("getUrl full image", err);
+            }
+        })();
+        return () => {
+            mounted = false;
+        };
+    }, [fullKey]);
+
+    return (
+        <>
+            {!loaded && <div className={styles.modalPlaceholder} />}
+            {url && (
+                <img
+                    src={url}
+                    alt={fullKey}
+                    className={`${styles.modalImage} ${loaded ? styles.visible : ""}`}
+                    onLoad={() => setLoaded(true)}
+                />
+            )}
+        </>
     );
 };
 
@@ -100,43 +114,40 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         try {
             setLoadingList(true);
 
-            // 1) list full-size images (use the same shape you had working)
-            const fullPrefixCandidates = [
-                `public/${path}/`, // your working pattern
-                `${path}/`, // fallback if amplify interprets differently
-            ];
-            const fullResult: any = await tryListPrefixes(fullPrefixCandidates);
-
+            const fullResult: any = await list({ path: `public/${path}/` });
             const fullKeys: string[] = (fullResult.items || [])
                 .map((i: any) => i.path ?? i.key ?? "")
                 .filter((k: string) => !!k && !k.endsWith("/"));
 
-            // 2) list thumbnails (try both public/thumbnails/... and thumbnails/...)
-            const thumbPrefixCandidates = [
-                `public/thumbnails/${path}/`,
-                `thumbnails/${path}/`,
-            ];
-            const thumbResult: any = await tryListPrefixes(thumbPrefixCandidates);
-            const thumbKeys: string[] = (thumbResult.items || [])
+            const thumbResult: any = await list({ path: `public/thumbnails/${path}/` });
+            const rawThumbKeys: string[] = (thumbResult.items || [])
                 .map((i: any) => i.path ?? i.key ?? "")
                 .filter((k: string) => !!k && !k.endsWith("/"));
 
-            const thumbSet = new Set(thumbKeys);
+            // Build a map: cleanedThumbPathLowercase -> cleanedThumbPath (no 'public/')
+            const thumbMap = new Map<string, string>();
+            rawThumbKeys.forEach((k) => {
+                const clean = k.replace(/^public\//, ""); // e.g. "thumbnails/nyc/DSC01788.jpg"
+                thumbMap.set(clean.toLowerCase(), clean);
+            });
 
-            // 3) build ImageItem list (thumbnail if exists else full)
             const items: ImageItem[] = fullKeys.map((fullKey: string) => {
-                const cleanFullKey = fullKey.replace(/^public\//, ""); // <-- ADD THIS
-                const expectedThumb1 = cleanFullKey.replace(
-                    `${path}/`,
-                    `thumbnails/${path}/`
-                );
+                const cleanFullKey = fullKey.replace(/^public\//, ""); // e.g. "nyc/DSC01788.JPG"
+                const fileName = cleanFullKey.split("/").pop() ?? "";
+                const expectedThumbClean = `thumbnails/${path}/${fileName}`; // desired thumbnail path (cleaned)
+                const matchedThumb = thumbMap.get(expectedThumbClean.toLowerCase());
 
-                const thumbnailKey = thumbSet.has(`public/${expectedThumb1}`)
-                    ? expectedThumb1
-                    : cleanFullKey;
+                // If we found a real thumbnail, use it (with the exact casing from S3).
+                // Otherwise fall back to the full image.
+                const thumbnailKey = matchedThumb ?? cleanFullKey;
 
                 return { fullKey: cleanFullKey, thumbnailKey };
             });
+
+            // helpful dev logs — remove in production
+            console.debug("fullKeys", fullKeys);
+            console.debug("rawThumbKeys", rawThumbKeys);
+            console.debug("items (final)", items);
 
             setAllImages(shuffleArray(items));
         } catch (err) {
@@ -145,6 +156,8 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
             setLoadingList(false);
         }
     }, [path]);
+
+
 
     // initial fetch
     useEffect(() => {
@@ -204,37 +217,3 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
 };
 
 export default CustomStorageImage;
-
-/* helper subcomponent for modal full image (uses getUrl() and shows placeholder while loading) */
-const FullSizeImage: FC<{ fullKey: string }> = ({ fullKey }) => {
-    const [url, setUrl] = useState<string | null>(null);
-    const [loaded, setLoaded] = useState(false);
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                const r = await getUrl({ key: fullKey });
-                if (mounted) setUrl(String(r?.url ?? r));
-            } catch (err) {
-                console.error("getUrl full image", err);
-            }
-        })();
-        return () => {
-            mounted = false;
-        };
-    }, [fullKey]);
-
-    return (
-        <>
-            {!loaded && <div className={styles.modalPlaceholder} />}
-            {url && (
-                <img
-                    src={url}
-                    alt={fullKey}
-                    className={`${styles.modalImage} ${loaded ? styles.visible : ""}`}
-                    onLoad={() => setLoaded(true)}
-                />
-            )}
-        </>
-    );
-};
