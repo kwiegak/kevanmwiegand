@@ -8,6 +8,33 @@
     -webkit-overflow-scrolling: touch;
 }
 
+@media (max-width: 768px) {
+    .galleryRow {
+        display: grid;
+        /* switch to grid for stacking */
+        grid-template-columns: 1fr;
+        /* single column */
+        gap: 12px;
+        overflow-x: visible;
+        /* disable horizontal scroll */
+        scroll-snap-type: none;
+    }
+
+    .imageWrapper {
+        min-width: unset;
+        /* let them size naturally */
+        width: 100%;
+        /* take full width on mobile */
+    }
+
+    .image {
+        width: 100%;
+        height: auto;
+        /* maintain aspect ratio */
+        object-fit: contain;
+    }
+}
+
 .galleryRow::-webkit-scrollbar {
     height: 6px;
 }
