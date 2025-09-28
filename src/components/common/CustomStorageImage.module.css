@@ -1,14 +1,21 @@
 .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    display: flex;
+    flex-wrap: nowrap;
     gap: 12px;
     padding: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
 
 .imageWrapper {
+    flex: 0 0 auto;
+    /* prevents items from shrinking */
+    scroll-snap-align: start;
     position: relative;
     overflow: hidden;
     border-radius: 10px;
+    min-width: 220px;
     min-height: 140px;
     background: #f3f3f3;
     cursor: pointer;
