@@ -1,17 +1,24 @@
-.gallery {
+.galleryRow {
     display: flex;
     flex-wrap: nowrap;
     gap: 12px;
-    padding: 12px;
+    padding: 12px 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 }
 
+.galleryRow::-webkit-scrollbar {
+    height: 6px;
+}
+
+.galleryRow::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+/* Keep your existing imageWrapper, placeholder, image, modal, etc. */
 .imageWrapper {
-    flex: 0 0 auto;
-    /* prevents items from shrinking */
-    scroll-snap-align: start;
     position: relative;
     overflow: hidden;
     border-radius: 10px;
@@ -22,6 +29,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
+    /* <--- prevent shrinking inside flex row */
 }
 
 .placeholder {

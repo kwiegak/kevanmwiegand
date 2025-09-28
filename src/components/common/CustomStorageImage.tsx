@@ -18,7 +18,8 @@ type ImageItem = {
     thumbnailKey: string;
 };
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 40; // load more images at a time
+const ROW_SIZE = 6;   // number of images per row
 
 function shuffleArray<T>(array: T[]): T[] {
     const arr = [...array];
@@ -27,6 +28,14 @@ function shuffleArray<T>(array: T[]): T[] {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
+}
+
+function chunkArray<T>(array: T[], size: number): T[][] {
+    const result: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+        result.push(array.slice(i, i + size));
+    }
+    return result;
 }
 
 const ThumbnailTile: FC<{
@@ -40,7 +49,6 @@ const ThumbnailTile: FC<{
         let mounted = true;
         (async () => {
             try {
-                // ask Amplify for a signed URL for the thumbnail (or full image if no thumbnail)
                 const res = await getUrl({ key: item.thumbnailKey });
                 if (mounted) setUrl(String(res?.url ?? res));
             } catch (err) {
@@ -124,30 +132,21 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                 .map((i: any) => i.path ?? i.key ?? "")
                 .filter((k: string) => !!k && !k.endsWith("/"));
 
-            // Build a map: cleanedThumbPathLowercase -> cleanedThumbPath (no 'public/')
             const thumbMap = new Map<string, string>();
             rawThumbKeys.forEach((k) => {
-                const clean = k.replace(/^public\//, ""); // e.g. "thumbnails/nyc/DSC01788.jpg"
+                const clean = k.replace(/^public\//, "");
                 thumbMap.set(clean.toLowerCase(), clean);
             });
 
             const items: ImageItem[] = fullKeys.map((fullKey: string) => {
-                const cleanFullKey = fullKey.replace(/^public\//, ""); // e.g. "nyc/DSC01788.JPG"
+                const cleanFullKey = fullKey.replace(/^public\//, "");
                 const fileName = cleanFullKey.split("/").pop() ?? "";
-                const expectedThumbClean = `thumbnails/${path}/${fileName}`; // desired thumbnail path (cleaned)
+                const expectedThumbClean = `thumbnails/${path}/${fileName}`;
                 const matchedThumb = thumbMap.get(expectedThumbClean.toLowerCase());
-
-                // If we found a real thumbnail, use it (with the exact casing from S3).
-                // Otherwise fall back to the full image.
                 const thumbnailKey = matchedThumb ?? cleanFullKey;
 
                 return { fullKey: cleanFullKey, thumbnailKey };
             });
-
-            // helpful dev logs — remove in production
-            console.debug("fullKeys", fullKeys);
-            console.debug("rawThumbKeys", rawThumbKeys);
-            console.debug("items (final)", items);
 
             setAllImages(shuffleArray(items));
         } catch (err) {
@@ -157,16 +156,12 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         }
     }, [path]);
 
-
-
-    // initial fetch
     useEffect(() => {
         setAllImages([]);
         setVisibleCount(PAGE_SIZE);
         fetchAll();
     }, [path, fetchAll]);
 
-    // infinite scroll sentinel: load next page when near bottom
     useEffect(() => {
         if (!sentinelRef.current) return;
         const obs = new IntersectionObserver(
@@ -186,29 +181,34 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         [allImages, visibleCount]
     );
 
+    const rowChunks = useMemo(
+        () => chunkArray(visibleImages, ROW_SIZE),
+        [visibleImages]
+    );
+
     return (
         <>
             {loadingList && <p className={styles.loading}>Loading...</p>}
 
-            <div className={styles.gallery}>
-                {visibleImages.map((it) => (
-                    <ThumbnailTile
-                        key={it.thumbnailKey}
-                        item={it}
-                        onClick={(fullKey) => setSelectedImage(fullKey)}
-                    />
-                ))}
-            </div>
+            {rowChunks.map((row, rowIndex) => (
+                <div key={rowIndex} className={styles.galleryRow}>
+                    {row.map((it) => (
+                        <ThumbnailTile
+                            key={it.thumbnailKey}
+                            item={it}
+                            onClick={(fullKey) => setSelectedImage(fullKey)}
+                        />
+                    ))}
+                </div>
+            ))}
 
             <div ref={sentinelRef} style={{ height: 1 }} />
 
-            {/* Lightbox modal */}
             {selectedImage && (
                 <div
                     className={styles.modal}
                     onClick={() => setSelectedImage(null)}
                 >
-                    {/* full-size image - use getUrl inside a plain img for reliable onLoad handling */}
                     <FullSizeImage fullKey={selectedImage} />
                 </div>
             )}
