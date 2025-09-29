@@ -178,7 +178,7 @@
 }
 
 /* Mobile stacking */
-@media (max-width: 768px) {
+@media (max-width: 576px) {
     .galleryRow {
         display: grid;
         grid-template-columns: 1fr;
