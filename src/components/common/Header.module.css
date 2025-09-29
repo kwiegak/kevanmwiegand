@@ -1,2 +1,140 @@
-.headers {
+/* Give navbar a subtle shadow and smooth background transition */
+.navbar {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(90deg, #1f1f1f 0%, #2b2b2b 100%);
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Brand styling - make it stand out */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #ffffff !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.navbar-brand:hover {
+    color: #0d6efd !important;
+    /* Bootstrap primary blue */
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    background-color: #2b2b2b;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 0.5rem;
+}
+
+/* Dropdown items - hover effect */
+.dropdown-item {
+    color: #ffffff !important;
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(13, 110, 253, 0.2);
+    transform: translateX(4px);
+}
+
+/* Icons next to social links - make them pop */
+.dropdown-item svg {
+    vertical-align: middle;
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-item:hover svg {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Navbar toggle (hamburger) styling */
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+/* Add this to Header.module.css */
+.navbar.scrolled {
+    background: rgba(31, 31, 31, 0.95);
+    backdrop-filter: blur(6px);
+}
+
+/* ---------- Dropdown Animation ---------- */
+
+/* Start hidden with slight upward offset */
+.dropdown-menu {
+    background-color: #2b2b2b;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 0.5rem;
+    opacity: 0;
+    transform: translateY(-8px);
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+
+/* When open, fade in and slide down */
+.show>.dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    transition-delay: 0s;
+    /* make it appear immediately */
+}
+
+/* Dropdown items */
+.dropdown-item {
+    color: #ffffff !important;
+    border-radius: 6px;
+    padding: 8px 12px;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(13, 110, 253, 0.2);
+    transform: translateX(4px);
+}
+
+/* Icons - animate on hover */
+.dropdown-item svg {
+    vertical-align: middle;
+    font-size: 1.1rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.dropdown-item:hover svg {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Toggler button */
+.navbar-toggler {
+    border: none;
+    outline: none;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
 }

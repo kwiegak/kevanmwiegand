@@ -8,47 +8,12 @@
     -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 768px) {
-    .galleryRow {
-        display: grid;
-        /* switch to grid for stacking */
-        grid-template-columns: 1fr;
-        /* single column */
-        gap: 12px;
-        overflow-x: visible;
-        /* disable horizontal scroll */
-        scroll-snap-type: none;
-    }
-
-    .imageWrapper {
-        min-width: unset;
-        /* let them size naturally */
-        width: 100%;
-        /* take full width on mobile */
-    }
-
-    .image {
-        width: 100%;
-        height: auto;
-        /* maintain aspect ratio */
-        object-fit: contain;
-    }
-}
-
-.galleryRow::-webkit-scrollbar {
-    height: 6px;
-}
-
-.galleryRow::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
-}
-
-/* Keep your existing imageWrapper, placeholder, image, modal, etc. */
+/* Scroll snap alignment so each tile "locks" neatly */
 .imageWrapper {
+    scroll-snap-align: start;
     position: relative;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 12px;
     min-width: 220px;
     min-height: 140px;
     background: #f3f3f3;
@@ -57,7 +22,14 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    /* <--- prevent shrinking inside flex row */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+/* Hover effects: slight zoom, 3D tilt, shadow */
+.imageWrapper:hover {
+    transform: scale(1.03) perspective(600px) rotateY(2deg);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .placeholder {
@@ -66,7 +38,7 @@
     background: linear-gradient(90deg, #eee, #f6f6f6, #eee);
     background-size: 200% 100%;
     animation: pulse 1.2s ease-in-out infinite;
-    border-radius: 10px;
+    border-radius: inherit;
 }
 
 @keyframes pulse {
@@ -85,28 +57,48 @@
     object-fit: cover;
     display: block;
     opacity: 0;
-    transition: opacity 260ms ease-in;
+    transition: opacity 260ms ease-in, transform 0.3s ease;
 }
 
 .image.visible {
     opacity: 1;
 }
 
+.imageWrapper:hover .image.visible {
+    transform: scale(1.05);
+    filter: brightness(1.05);
+}
+
+/* Loading text */
 .loading {
     text-align: center;
     padding: 8px;
     color: #666;
+    font-style: italic;
 }
 
+/* Modal with blurred background (glassmorphism effect) */
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    cursor: zoom-out;
+    animation: fadeIn 0.25s ease forwards;
+    outline: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modalPlaceholder {
@@ -117,15 +109,92 @@
     border-radius: 8px;
 }
 
+/* Full-size image with scale animation */
 .modalImage {
     max-width: 90%;
     max-height: 90%;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     opacity: 0;
-    transition: opacity 200ms ease-in;
+    transform: scale(0.95);
+    transition: opacity 200ms ease-in, transform 200ms ease-out;
 }
 
 .modalImage.visible {
     opacity: 1;
+    transform: scale(1);
+}
+
+/* Clickable left/right navigation zones */
+.navAreaLeft,
+.navAreaRight {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+}
+
+.navAreaLeft {
+    left: 0;
+}
+
+.navAreaRight {
+    right: 0;
+}
+
+/* Close button */
+.closeButton {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 10000;
+}
+
+.closeButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Scrollbar styling */
+.galleryRow::-webkit-scrollbar {
+    height: 6px;
+}
+
+.galleryRow::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+/* Mobile stacking */
+@media (max-width: 768px) {
+    .galleryRow {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        overflow-x: visible;
+        scroll-snap-type: none;
+    }
+
+    .imageWrapper {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .image {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
 }

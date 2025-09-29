@@ -18,8 +18,8 @@ type ImageItem = {
     thumbnailKey: string;
 };
 
-const PAGE_SIZE = 40; // load more images at a time
-const ROW_SIZE = 6;   // number of images per row
+const PAGE_SIZE = 40;
+const ROW_SIZE = 6;
 
 function shuffleArray<T>(array: T[]): T[] {
     const arr = [...array];
@@ -81,6 +81,7 @@ const ThumbnailTile: FC<{
 const FullSizeImage: FC<{ fullKey: string }> = ({ fullKey }) => {
     const [url, setUrl] = useState<string | null>(null);
     const [loaded, setLoaded] = useState(false);
+
     useEffect(() => {
         let mounted = true;
         (async () => {
@@ -117,6 +118,11 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const [loadingList, setLoadingList] = useState(true);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const sentinelRef = useRef<HTMLDivElement | null>(null);
+    const modalRef = useRef<HTMLDivElement | null>(null);
+
+    // Swipe tracking
+    const touchStartX = useRef<number | null>(null);
+    const touchEndX = useRef<number | null>(null);
 
     const fetchAll = useCallback(async () => {
         try {
@@ -186,6 +192,63 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         [visibleImages]
     );
 
+    const navigateNext = useCallback(() => {
+        if (!selectedImage) return;
+        const currentIndex = allImages.findIndex((img) => img.fullKey === selectedImage);
+        setSelectedImage(allImages[(currentIndex + 1) % allImages.length].fullKey);
+    }, [allImages, selectedImage]);
+
+    const navigatePrev = useCallback(() => {
+        if (!selectedImage) return;
+        const currentIndex = allImages.findIndex((img) => img.fullKey === selectedImage);
+        setSelectedImage(allImages[(currentIndex - 1 + allImages.length) % allImages.length].fullKey);
+    }, [allImages, selectedImage]);
+
+    // Keyboard + Swipe navigation
+    useEffect(() => {
+        if (!selectedImage) return;
+        const focusable = modalRef.current;
+        if (focusable) focusable.focus();
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setSelectedImage(null);
+            if (e.key === "ArrowRight") navigateNext();
+            if (e.key === "ArrowLeft") navigatePrev();
+        };
+
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartX.current = e.touches[0].clientX;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            touchEndX.current = e.touches[0].clientX;
+        };
+
+        const handleTouchEnd = () => {
+            if (touchStartX.current !== null && touchEndX.current !== null) {
+                const deltaX = touchStartX.current - touchEndX.current;
+                if (Math.abs(deltaX) > 50) {
+                    if (deltaX > 0) navigateNext();
+                    else navigatePrev();
+                }
+            }
+            touchStartX.current = null;
+            touchEndX.current = null;
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        window.addEventListener("touchstart", handleTouchStart);
+        window.addEventListener("touchmove", handleTouchMove);
+        window.addEventListener("touchend", handleTouchEnd);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+            window.removeEventListener("touchstart", handleTouchStart);
+            window.removeEventListener("touchmove", handleTouchMove);
+            window.removeEventListener("touchend", handleTouchEnd);
+        };
+    }, [selectedImage, navigateNext, navigatePrev]);
+
     return (
         <>
             {loadingList && <p className={styles.loading}>Loading...</p>}
@@ -205,11 +268,13 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
             <div ref={sentinelRef} style={{ height: 1 }} />
 
             {selectedImage && (
-                <div
-                    className={styles.modal}
-                    onClick={() => setSelectedImage(null)}
-                >
+                <div ref={modalRef} tabIndex={-1} className={styles.modal}>
+                    <div className={styles.navAreaLeft} onClick={navigatePrev} />
                     <FullSizeImage fullKey={selectedImage} />
+                    <div className={styles.navAreaRight} onClick={navigateNext} />
+                    <button className={styles.closeButton} onClick={() => setSelectedImage(null)}>
+                        ✕
+                    </button>
                 </div>
             )}
         </>
