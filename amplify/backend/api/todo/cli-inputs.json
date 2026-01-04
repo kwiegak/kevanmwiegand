@@ -8,6 +8,13 @@
       "cognitoUserPoolId": "authkevanmwiegand7e5540f0"
     },
     "conflictResolution": {},
-    "additionalAuthTypes": []
+    "additionalAuthTypes": [
+      {
+        "mode": "API_KEY",
+        "expirationTime": 7,
+        "apiKeyExpirationDate": "2026-01-11T02:34:46.182Z",
+        "keyDescription": ""
+      }
+    ]
   }
 }
