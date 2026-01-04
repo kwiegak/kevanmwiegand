@@ -1,32 +1,17 @@
 {
   "api": {
-    "todo": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "kevanmwiegand7e5540f0"
-        }
-      ],
+    "kevanmwiegand": {
+      "dependsOn": [],
       "output": {
         "authConfig": {
-          "additionalAuthenticationProviders": [
-            {
-              "apiKeyConfig": {
-                "apiKeyExpirationDate": "2026-01-11T02:34:46.182Z",
-                "apiKeyExpirationDays": 7,
-                "description": ""
-              },
-              "authenticationType": "API_KEY"
-            }
-          ],
+          "additionalAuthenticationProviders": [],
           "defaultAuthentication": {
-            "authenticationType": "AMAZON_COGNITO_USER_POOLS",
-            "userPoolConfig": {
-              "userPoolId": "authkevanmwiegand7e5540f0"
-            }
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2027-01-03T11:26:12.832Z",
+              "apiKeyExpirationDays": 364,
+              "description": ""
+            },
+            "authenticationType": "API_KEY"
           }
         }
       },
@@ -83,6 +68,24 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_S3Trigger6ce80d02_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger6ce80d02"
+        }
+      ]
+    },
+    "AMPLIFY_function_S3Trigger6ce80d02_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "S3Trigger6ce80d02"
+        }
+      ]
     }
   },
   "storage": {

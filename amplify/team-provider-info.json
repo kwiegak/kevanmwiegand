@@ -16,9 +16,6 @@
         "kevanmwiegand7e5540f0": {},
         "userPoolGroups": {}
       },
-      "api": {
-        "todo": {}
-      },
       "function": {
         "S3Trigger6ce80d02": {
           "deploymentBucketName": "amplify-amplifyf14cd66924404-staging-42b41-deployment",
@@ -27,6 +24,9 @@
       },
       "storage": {
         "mys3bucket": {}
+      },
+      "api": {
+        "kevanmwiegand": {}
       }
     }
   }
