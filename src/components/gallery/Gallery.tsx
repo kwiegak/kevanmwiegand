@@ -15,7 +15,7 @@ const Gallery: FC = () => {
 
     return (
         <div style={{ paddingTop: navHeight ? `${navHeight + 14}px` : '70px' }}>
-            <CustomStorageImage path={category ?? "all"} />
+            <CustomStorageImage path={category ?? "thailand"} />
         </div>
     );
 };
