@@ -204,51 +204,6 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         setSelectedImage(allImages[(currentIndex - 1 + allImages.length) % allImages.length].fullKey);
     }, [allImages, selectedImage]);
 
-    // Keyboard + Swipe navigation
-    useEffect(() => {
-        if (!selectedImage) return;
-        const focusable = modalRef.current;
-        if (focusable) focusable.focus();
-
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") setSelectedImage(null);
-            if (e.key === "ArrowRight") navigateNext();
-            if (e.key === "ArrowLeft") navigatePrev();
-        };
-
-        const handleTouchStart = (e: TouchEvent) => {
-            touchStartX.current = e.touches[0].clientX;
-        };
-
-        const handleTouchMove = (e: TouchEvent) => {
-            touchEndX.current = e.touches[0].clientX;
-        };
-
-        const handleTouchEnd = () => {
-            if (touchStartX.current !== null && touchEndX.current !== null) {
-                const deltaX = touchStartX.current - touchEndX.current;
-                if (Math.abs(deltaX) > 50) {
-                    if (deltaX > 0) navigateNext();
-                    else navigatePrev();
-                }
-            }
-            touchStartX.current = null;
-            touchEndX.current = null;
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("touchstart", handleTouchStart);
-        window.addEventListener("touchmove", handleTouchMove);
-        window.addEventListener("touchend", handleTouchEnd);
-
-        return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("touchstart", handleTouchStart);
-            window.removeEventListener("touchmove", handleTouchMove);
-            window.removeEventListener("touchend", handleTouchEnd);
-        };
-    }, [selectedImage, navigateNext, navigatePrev]);
-
     return (
         <>
             {loadingList && <p className={styles.loading}>Loading...</p>}
