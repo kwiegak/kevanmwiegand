@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "kevanmwiegand7e5540f0_identitypool_7e5540f0",
+    "identityPoolName": "kevanmwiegand9ebe13c6_identitypool_9ebe13c6",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "kevanm7e5540f0",
-    "userPoolName": "kevanmwiegand7e5540f0_userpool_7e5540f0",
+    "resourceNameTruncated": "kevanm9ebe13c6",
+    "userPoolName": "kevanmwiegand9ebe13c6_userpool_9ebe13c6",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -14,7 +14,7 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "2211",
+    "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
@@ -24,26 +24,20 @@
     ],
     "aliasAttributes": [],
     "userpoolClientGenerateSecret": false,
-    "userpoolClientRefreshTokenValidity": "90",
+    "userpoolClientRefreshTokenValidity": 30,
     "userpoolClientWriteAttributes": [
       "email"
     ],
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "kevanm7e5540f0_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": true,
-    "sharedId": "7e5540f0",
-    "resourceName": "kevanmwiegand7e5540f0",
+    "userpoolClientLambdaRole": "kevanm9ebe13c6_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "sharedId": "9ebe13c6",
+    "resourceName": "kevanmwiegand9ebe13c6",
     "authSelections": "identityPoolAndUserPool",
-    "useDefault": "manual",
-    "usernameAttributes": [
-      "email"
-    ],
-    "userPoolGroupList": [
-      "admin",
-      "developer"
-    ],
+    "useDefault": "default",
+    "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
     "useEnabledMfas": true,
@@ -60,16 +54,6 @@
       ]
     },
     "breakCircularDependency": true,
-    "dependsOn": [],
-    "thirdPartyAuth": false,
-    "userPoolGroups": true,
-    "adminQueries": true,
-    "triggers": {},
-    "hostedUI": false,
-    "authProviders": [],
-    "parentStack": {
-      "Ref": "AWS::StackId"
-    },
-    "permissions": []
+    "dependsOn": []
   }
 }
