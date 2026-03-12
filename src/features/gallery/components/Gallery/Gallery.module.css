@@ -1,3 +1,25 @@
-.main-content {
-    padding-top: 70px;
+.galleryContainer {
+    width: 100%;
+    padding-top: 80px;
+    padding-left: 16px;
+    padding-right: 16px;
+    box-sizing: border-box;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .galleryContainer {
+        padding-top: 72px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .galleryContainer {
+        padding-top: 64px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
 }

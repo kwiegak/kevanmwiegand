@@ -1,22 +1,17 @@
+import { FC } from "react";
 import { useParams } from "react-router-dom";
-import { FC, useEffect, useState } from 'react';
-import CustomStorageImage from '../CustomStorageImage/CustomStorageImage';
+import CustomStorageImage from "../CustomStorageImage/CustomStorageImage";
+import styles from "./Gallery.module.css";
 
 const Gallery: FC = () => {
     const { category } = useParams<{ category: string }>();
-    const [navHeight, setNavHeight] = useState<number>(0);
 
-    useEffect(() => {
-        const navbar = document.querySelector('.navbar');
-        if (navbar) {
-            setNavHeight(navbar.getBoundingClientRect().height);
-        }
-    }, []);
+    const galleryCategory = category ?? "thailand";
 
     return (
-        <div style={{ paddingTop: navHeight ? `${navHeight + 14}px` : '70px' }}>
-            <CustomStorageImage path={category ?? "thailand"} />
-        </div>
+        <main className={styles.galleryContainer}>
+            <CustomStorageImage path={galleryCategory} />
+        </main>
     );
 };
 
