@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import Header from './components/common/Header';
+import Header from './components/Header/Header';
 import './App.css';
 import Gallery from './components/gallery/Gallery';
 
