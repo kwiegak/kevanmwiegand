@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Header from './components/Header/Header';
 import './App.css';
-import Gallery from './components/Gallery/Gallery';
+import Gallery from './features/gallery/components/Gallery/Gallery';
 
 function App() {
   return (
