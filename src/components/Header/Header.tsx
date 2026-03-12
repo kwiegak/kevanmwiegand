@@ -62,9 +62,6 @@ const Header: FC<HeaderProps> = () => {
             </NavDropdown>
 
             <NavDropdown title="Kevan Wiegand" id="social-nav-dropdown">
-              <NavDropdown.Item onClick={() => handleExternalLink('https://www.linkedin.com/in/kevan-wiegand-0742b12ba/')}>
-                <FaLinkedin className="me-2" /> LinkedIn
-              </NavDropdown.Item>
               <NavDropdown.Item onClick={() => handleExternalLink('https://www.youtube.com/channel/UCpE3knGP4Fh9YFXpD49c8iw')}>
                 <FaYoutube className="me-2" /> YouTube
               </NavDropdown.Item>
