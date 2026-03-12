@@ -18,6 +18,10 @@ type ImageItem = {
     thumbnailKey: string;
 };
 
+type StorageListResult = {
+    items: { path?: string; key?: string }[];
+};
+
 const PAGE_SIZE = 40;
 const ROW_SIZE = 6;
 
@@ -120,23 +124,29 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const sentinelRef = useRef<HTMLDivElement | null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
 
-    // Swipe tracking
-    const touchStartX = useRef<number | null>(null);
-    const touchEndX = useRef<number | null>(null);
+    const closeModal = useCallback(() => {
+        setSelectedImage(null);
+    }, []);
 
     const fetchAll = useCallback(async () => {
         try {
             setLoadingList(true);
 
-            const fullResult: any = await list({ path: `public/${path}/` });
-            const fullKeys: string[] = (fullResult.items || [])
-                .map((i: any) => i.path ?? i.key ?? "")
-                .filter((k: string) => !!k && !k.endsWith("/"));
+            const fullResult = (await list({
+                path: `public/${path}/`,
+            })) as StorageListResult;
 
-            const thumbResult: any = await list({ path: `public/thumbnails/${path}/` });
+            const fullKeys: string[] = (fullResult.items || [])
+                .map((i) => i.path ?? i.key ?? "")
+                .filter((k) => !!k && !k.endsWith("/"));
+
+            const thumbResult = (await list({
+                path: `public/thumbnails/${path}/`,
+            })) as StorageListResult;
+
             const rawThumbKeys: string[] = (thumbResult.items || [])
-                .map((i: any) => i.path ?? i.key ?? "")
-                .filter((k: string) => !!k && !k.endsWith("/"));
+                .map((i) => i.path ?? i.key ?? "")
+                .filter((k) => !!k && !k.endsWith("/"));
 
             const thumbMap = new Map<string, string>();
             rawThumbKeys.forEach((k) => {
@@ -151,7 +161,10 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                 const matchedThumb = thumbMap.get(expectedThumbClean.toLowerCase());
                 const thumbnailKey = matchedThumb ?? cleanFullKey;
 
-                return { fullKey: cleanFullKey, thumbnailKey };
+                return {
+                    fullKey: cleanFullKey,
+                    thumbnailKey,
+                };
             });
 
             setAllImages(shuffleArray(items));
@@ -173,7 +186,9 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         const obs = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    setVisibleCount((v) => Math.min(allImages.length, v + PAGE_SIZE));
+                    setVisibleCount((v) =>
+                        Math.min(allImages.length, v + PAGE_SIZE)
+                    );
                 }
             },
             { rootMargin: "300px" }
@@ -194,15 +209,62 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
 
     const navigateNext = useCallback(() => {
         if (!selectedImage) return;
-        const currentIndex = allImages.findIndex((img) => img.fullKey === selectedImage);
-        setSelectedImage(allImages[(currentIndex + 1) % allImages.length].fullKey);
+
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
+
+        setSelectedImage(
+            allImages[(currentIndex + 1) % allImages.length].fullKey
+        );
     }, [allImages, selectedImage]);
 
     const navigatePrev = useCallback(() => {
         if (!selectedImage) return;
-        const currentIndex = allImages.findIndex((img) => img.fullKey === selectedImage);
-        setSelectedImage(allImages[(currentIndex - 1 + allImages.length) % allImages.length].fullKey);
+
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
+
+        setSelectedImage(
+            allImages[(currentIndex - 1 + allImages.length) % allImages.length]
+                .fullKey
+        );
     }, [allImages, selectedImage]);
+
+    // Keyboard navigation
+    useEffect(() => {
+        if (!selectedImage) return;
+
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") navigateNext();
+            if (e.key === "ArrowLeft") navigatePrev();
+            if (e.key === "Escape") closeModal();
+        };
+
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, [selectedImage, navigateNext, navigatePrev, closeModal]);
+
+    // Preload next image
+    useEffect(() => {
+        if (!selectedImage) return;
+
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
+
+        const next = allImages[(currentIndex + 1) % allImages.length];
+
+        if (!next) return;
+
+        getUrl({ key: next.fullKey })
+            .then((r) => {
+                const img = new Image();
+                img.src = String(r?.url ?? r);
+            })
+            .catch(() => { });
+    }, [selectedImage, allImages]);
 
     return (
         <>
@@ -227,7 +289,8 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                     <div className={styles.navAreaLeft} onClick={navigatePrev} />
                     <FullSizeImage fullKey={selectedImage} />
                     <div className={styles.navAreaRight} onClick={navigateNext} />
-                    <button className={styles.closeButton} onClick={() => setSelectedImage(null)}>
+
+                    <button className={styles.closeButton} onClick={closeModal}>
                         ✕
                     </button>
                 </div>
