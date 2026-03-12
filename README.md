@@ -1,6 +1,6 @@
-# 🚀 Welcome to your new awesome project!
+# Welcome to Kevan Wiegand's website and photo gallery!
 
-This project has been created using **webpack-cli**, you can now run
+To build the project:
 
 ```
 npm run build
@@ -8,8 +8,8 @@ npm run build
 
 or
 
-```
-yarn build
-```
+To run the project:
 
-to bundle your application
+```
+npm run start
+```
