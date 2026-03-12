@@ -24,7 +24,7 @@
   , "src/components/home/HomePage.test.tsx"
   , "src/components/home/HomePage.tsx"
   , "globals.d.ts"
-  , "types/index.d.ts"
+  , "src/types/assets.d.ts"
   , "**/*.ts"
   , "**/*.tsx" ]
 }
