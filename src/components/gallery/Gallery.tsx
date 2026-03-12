@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
-import React, { FC, useEffect, useState } from 'react';
-import CustomStorageImage from '../common/CustomStorageImage';
+import { FC, useEffect, useState } from 'react';
+import CustomStorageImage from '../CustomStorageImage/CustomStorageImage';
 
 const Gallery: FC = () => {
     const { category } = useParams<{ category: string }>();
