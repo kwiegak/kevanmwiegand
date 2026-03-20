@@ -1,0 +1,17 @@
+.modalPlaceholder {
+    width: 80vw;
+    height: 80vh;
+    background: #222;
+}
+
+.modalImage {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.modalImage.visible {
+    opacity: 1;
+}

@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { FaGithub, FaYoutube } from "react-icons/fa";
 import { photoCollections } from "../../config/photoCollections";
-import { FaGithub, FaLinkedin, FaYoutube } from "react-icons/fa";
 import styles from './Header.module.css';
 
 interface HeaderProps { }
@@ -16,12 +16,12 @@ const Header: FC<HeaderProps> = () => {
 
   const handleSelect = (path: string) => {
     navigate(path);
-    setExpanded(false); // collapse the navbar
+    setExpanded(false);
   };
 
   const handleExternalLink = (url: string) => {
     window.open(url, "_blank");
-    setExpanded(false); // collapse the navbar after click
+    setExpanded(false);
   };
 
   return (

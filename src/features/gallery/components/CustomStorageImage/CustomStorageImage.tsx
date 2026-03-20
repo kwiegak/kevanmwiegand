@@ -1,12 +1,9 @@
-import {
-    FC,
-    useState,
-    useEffect,
-    useCallback,
-    useRef,
-    useMemo,
-} from "react";
+import { FC, useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { list, getUrl } from "@aws-amplify/storage";
+import { shuffleArray } from "../../utils/shuffleArray";
+import { chunkArray } from "../../utils/chunkArray";
+import ThumbnailTile from "../ThumbnailTile/ThumbnailTile"
+import FullSizeImage from "../FullSizeImage/FullSizeImage";
 import styles from "./CustomStorageImage.module.css";
 
 interface CustomStorageProps {
@@ -24,97 +21,6 @@ type StorageListResult = {
 
 const PAGE_SIZE = 40;
 const ROW_SIZE = 6;
-
-function shuffleArray<T>(array: T[]): T[] {
-    const arr = [...array];
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
-}
-
-function chunkArray<T>(array: T[], size: number): T[][] {
-    const result: T[][] = [];
-    for (let i = 0; i < array.length; i += size) {
-        result.push(array.slice(i, i + size));
-    }
-    return result;
-}
-
-const ThumbnailTile: FC<{
-    item: ImageItem;
-    onClick: (fullKey: string) => void;
-}> = ({ item, onClick }) => {
-    const [url, setUrl] = useState<string | null>(null);
-    const [loaded, setLoaded] = useState(false);
-
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                const res = await getUrl({ key: item.thumbnailKey });
-                if (mounted) setUrl(String(res?.url ?? res));
-            } catch (err) {
-                console.error("getUrl error", err);
-            }
-        })();
-        return () => {
-            mounted = false;
-        };
-    }, [item.thumbnailKey]);
-
-    return (
-        <div className={styles.imageWrapper} onClick={() => onClick(item.fullKey)}>
-            {!loaded && <div className={styles.placeholder} />}
-            {url && (
-                <img
-                    src={url}
-                    alt={item.fullKey}
-                    loading="lazy"
-                    className={`${styles.image} ${loaded ? styles.visible : ""}`}
-                    onLoad={() => setLoaded(true)}
-                    width="400"
-                    height="300"
-                />
-            )}
-        </div>
-    );
-};
-
-const FullSizeImage: FC<{ fullKey: string }> = ({ fullKey }) => {
-    const [url, setUrl] = useState<string | null>(null);
-    const [loaded, setLoaded] = useState(false);
-
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                const r = await getUrl({ key: fullKey });
-                if (mounted) setUrl(String(r?.url ?? r));
-            } catch (err) {
-                console.error("getUrl full image", err);
-            }
-        })();
-        return () => {
-            mounted = false;
-        };
-    }, [fullKey]);
-
-    return (
-        <>
-            {!loaded && <div className={styles.modalPlaceholder} />}
-            {url && (
-                <img
-                    src={url}
-                    alt={fullKey}
-                    className={`${styles.modalImage} ${loaded ? styles.visible : ""}`}
-                    onLoad={() => setLoaded(true)}
-                />
-            )}
-        </>
-    );
-};
 
 const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const [allImages, setAllImages] = useState<ImageItem[]>([]);

@@ -28,38 +28,6 @@
     }
 }
 
-.imageWrapper {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: 6px;
-    background: #eee;
-    cursor: pointer;
-}
-
-.placeholder {
-    position: absolute;
-    inset: 0;
-    background: #e0e0e0;
-}
-
-.image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-.visible {
-    opacity: 1;
-}
-
-.imageWrapper:hover .image {
-    transform: scale(1.03);
-}
-
 .modal {
     position: fixed;
     inset: 0;
@@ -68,24 +36,6 @@
     align-items: center;
     justify-content: center;
     z-index: 9999;
-}
-
-.modalPlaceholder {
-    width: 80vw;
-    height: 80vh;
-    background: #222;
-}
-
-.modalImage {
-    max-width: 90vw;
-    max-height: 90vh;
-    object-fit: contain;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-}
-
-.modalImage.visible {
-    opacity: 1;
 }
 
 .navAreaLeft,
