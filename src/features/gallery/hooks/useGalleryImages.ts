@@ -1,66 +1,70 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { list } from "@aws-amplify/storage";
 import { shuffleArray } from "../utils/shuffleArray";
 
-export interface ImageItem {
-  fullKey: string;
-  thumbnailKey: string;
-}
-
-type StorageListResult = {
-  items: { path?: string; key?: string }[];
+type ImageItem = {
+    fullKey: string;
+    thumbnailKey: string;
 };
 
-export function useGalleryImages(path: string) {
-  const [images, setImages] = useState<ImageItem[]>([]);
-  const [loading, setLoading] = useState(true);
+type StorageListResult = {
+    items: { path?: string; key?: string }[];
+};
 
-  const fetchImages = useCallback(async () => {
-    try {
-      setLoading(true);
+export const useGalleryImages = () => {
+    const [images, setImages] = useState<ImageItem[]>([]);
+    const [loading, setLoading] = useState(false);
 
-      const fullResult = (await list({
-        path: `public/${path}/`,
-      })) as StorageListResult;
+    const fetchImages = useCallback(async (path: string) => {
+        try {
+            setLoading(true);
 
-      const fullKeys = (fullResult.items || [])
-        .map(i => i.path ?? i.key ?? "")
-        .filter(k => !!k && !k.endsWith("/"));
+            const fullResult = (await list({
+                path: `public/${path}/`,
+            })) as StorageListResult;
 
-      const thumbResult = (await list({
-        path: `public/thumbnails/${path}/`,
-      })) as StorageListResult;
+            const fullKeys: string[] = (fullResult.items || [])
+                .map((i) => i.path ?? i.key ?? "")
+                .filter((k) => !!k && !k.endsWith("/"));
 
-      const thumbMap = new Map<string, string>();
+            const thumbResult = (await list({
+                path: `public/thumbnails/${path}/`,
+            })) as StorageListResult;
 
-      (thumbResult.items || []).forEach(i => {
-        const key = (i.path ?? i.key ?? "").replace(/^public\//, "");
-        thumbMap.set(key.toLowerCase(), key);
-      });
+            const rawThumbKeys: string[] = (thumbResult.items || [])
+                .map((i) => i.path ?? i.key ?? "")
+                .filter((k) => !!k && !k.endsWith("/"));
 
-      const items = fullKeys.map(fullKey => {
-        const cleanFullKey = fullKey.replace(/^public\//, "");
-        const fileName = cleanFullKey.split("/").pop() ?? "";
+            const thumbMap = new Map<string, string>();
+            rawThumbKeys.forEach((k) => {
+                const clean = k.replace(/^public\//, "");
+                thumbMap.set(clean.toLowerCase(), clean);
+            });
 
-        const expectedThumb = `thumbnails/${path}/${fileName}`;
+            const items: ImageItem[] = fullKeys.map((fullKey: string) => {
+                const cleanFullKey = fullKey.replace(/^public\//, "");
+                const fileName = cleanFullKey.split("/").pop() ?? "";
 
-        return {
-          fullKey: cleanFullKey,
-          thumbnailKey:
-            thumbMap.get(expectedThumb.toLowerCase()) ?? cleanFullKey
-        };
-      });
+                const expectedThumbClean = `thumbnails/${path}/${fileName}`;
+                const matchedThumb = thumbMap.get(expectedThumbClean.toLowerCase());
 
-      setImages(shuffleArray(items));
+                return {
+                    fullKey: cleanFullKey,
+                    thumbnailKey: matchedThumb ?? cleanFullKey,
+                };
+            });
 
-    } finally {
-      setLoading(false);
-    }
-  }, [path]);
+            setImages(shuffleArray(items));
+        } catch (err) {
+            console.error("Error listing images", err);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
-  useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
-
-  return { images, loading };
-}
+    return {
+        images,
+        loading,
+        fetchImages,
+    };
+};

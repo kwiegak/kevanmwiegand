@@ -1,107 +1,43 @@
 import { FC, useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { list, getUrl } from "@aws-amplify/storage";
-import { shuffleArray } from "../../utils/shuffleArray";
 import { chunkArray } from "../../utils/chunkArray";
 import ThumbnailTile from "../ThumbnailTile/ThumbnailTile"
 import FullSizeImage from "../FullSizeImage/FullSizeImage";
 import styles from "./CustomStorageImage.module.css";
+import { useGalleryImages } from "../../hooks/useGalleryImages";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { useModalNavigation } from "../../hooks/useModalNavigation";
 
 interface CustomStorageProps {
     path: string;
 }
 
-type ImageItem = {
-    fullKey: string;
-    thumbnailKey: string;
-};
-
-type StorageListResult = {
-    items: { path?: string; key?: string }[];
-};
-
 const PAGE_SIZE = 40;
 const ROW_SIZE = 6;
 
 const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
-    const [allImages, setAllImages] = useState<ImageItem[]>([]);
+    const { images: allImages, loading: loadingList, fetchImages } = useGalleryImages();
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-    const [loadingList, setLoadingList] = useState(true);
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
-    const sentinelRef = useRef<HTMLDivElement | null>(null);
     const modalRef = useRef<HTMLDivElement | null>(null);
+    const hasMore = visibleCount < allImages.length;
+    const {
+        selectedImage,
+        setSelectedImage,
+        closeModal,
+        navigateNext,
+        navigatePrev,
+    } = useModalNavigation(allImages);
 
-    const closeModal = useCallback(() => {
-        setSelectedImage(null);
-    }, []);
-
-    const fetchAll = useCallback(async () => {
-        try {
-            setLoadingList(true);
-
-            const fullResult = (await list({
-                path: `public/${path}/`,
-            })) as StorageListResult;
-
-            const fullKeys: string[] = (fullResult.items || [])
-                .map((i) => i.path ?? i.key ?? "")
-                .filter((k) => !!k && !k.endsWith("/"));
-
-            const thumbResult = (await list({
-                path: `public/thumbnails/${path}/`,
-            })) as StorageListResult;
-
-            const rawThumbKeys: string[] = (thumbResult.items || [])
-                .map((i) => i.path ?? i.key ?? "")
-                .filter((k) => !!k && !k.endsWith("/"));
-
-            const thumbMap = new Map<string, string>();
-            rawThumbKeys.forEach((k) => {
-                const clean = k.replace(/^public\//, "");
-                thumbMap.set(clean.toLowerCase(), clean);
-            });
-
-            const items: ImageItem[] = fullKeys.map((fullKey: string) => {
-                const cleanFullKey = fullKey.replace(/^public\//, "");
-                const fileName = cleanFullKey.split("/").pop() ?? "";
-                const expectedThumbClean = `thumbnails/${path}/${fileName}`;
-                const matchedThumb = thumbMap.get(expectedThumbClean.toLowerCase());
-                const thumbnailKey = matchedThumb ?? cleanFullKey;
-
-                return {
-                    fullKey: cleanFullKey,
-                    thumbnailKey,
-                };
-            });
-
-            setAllImages(shuffleArray(items));
-        } catch (err) {
-            console.error("Error listing images", err);
-        } finally {
-            setLoadingList(false);
-        }
-    }, [path]);
-
-    useEffect(() => {
-        setAllImages([]);
-        setVisibleCount(PAGE_SIZE);
-        fetchAll();
-    }, [path, fetchAll]);
-
-    useEffect(() => {
-        if (!sentinelRef.current) return;
-        const obs = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setVisibleCount((v) =>
-                        Math.min(allImages.length, v + PAGE_SIZE)
-                    );
-                }
-            },
-            { rootMargin: "300px" }
+    const loadMore = useCallback(() => {
+        setVisibleCount((v) =>
+            Math.min(allImages.length, v + PAGE_SIZE)
         );
-        obs.observe(sentinelRef.current);
-        return () => obs.disconnect();
     }, [allImages.length]);
+
+    const { loaderRef } = useInfiniteScroll({
+        onLoadMore: loadMore,
+        hasMore,
+        loading: loadingList,
+    });
 
     const visibleImages = useMemo(
         () => allImages.slice(0, visibleCount),
@@ -113,69 +49,15 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         [visibleImages]
     );
 
-    const navigateNext = useCallback(() => {
-        if (!selectedImage) return;
-
-        const currentIndex = allImages.findIndex(
-            (img) => img.fullKey === selectedImage
-        );
-
-        setSelectedImage(
-            allImages[(currentIndex + 1) % allImages.length].fullKey
-        );
-    }, [allImages, selectedImage]);
-
-    const navigatePrev = useCallback(() => {
-        if (!selectedImage) return;
-
-        const currentIndex = allImages.findIndex(
-            (img) => img.fullKey === selectedImage
-        );
-
-        setSelectedImage(
-            allImages[(currentIndex - 1 + allImages.length) % allImages.length]
-                .fullKey
-        );
-    }, [allImages, selectedImage]);
-
-    // Keyboard navigation
     useEffect(() => {
-        if (!selectedImage) return;
+        setVisibleCount(PAGE_SIZE);
+        fetchImages(path);
+    }, [path, fetchImages]);
 
-        const handler = (e: KeyboardEvent) => {
-            if (e.key === "ArrowRight") navigateNext();
-            if (e.key === "ArrowLeft") navigatePrev();
-            if (e.key === "Escape") closeModal();
-        };
-
-        window.addEventListener("keydown", handler);
-        return () => window.removeEventListener("keydown", handler);
-    }, [selectedImage, navigateNext, navigatePrev, closeModal]);
-
-    // Preload next image
-    useEffect(() => {
-        if (!selectedImage) return;
-
-        const currentIndex = allImages.findIndex(
-            (img) => img.fullKey === selectedImage
-        );
-
-        const next = allImages[(currentIndex + 1) % allImages.length];
-
-        if (!next) return;
-
-        getUrl({ key: next.fullKey })
-            .then((r) => {
-                const img = new Image();
-                img.src = String(r?.url ?? r);
-            })
-            .catch(() => { });
-    }, [selectedImage, allImages]);
 
     return (
         <>
             {loadingList && <p className={styles.loading}>Loading...</p>}
-
             {rowChunks.map((row, rowIndex) => (
                 <div key={rowIndex} className={styles.galleryRow}>
                     {row.map((it) => (
@@ -187,15 +69,12 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                     ))}
                 </div>
             ))}
-
-            <div ref={sentinelRef} style={{ height: 1 }} />
-
+            <div ref={loaderRef} style={{ height: 1 }} />
             {selectedImage && (
                 <div ref={modalRef} tabIndex={-1} className={styles.modal}>
                     <div className={styles.navAreaLeft} onClick={navigatePrev} />
                     <FullSizeImage fullKey={selectedImage} />
                     <div className={styles.navAreaRight} onClick={navigateNext} />
-
                     <button className={styles.closeButton} onClick={closeModal}>
                         ✕
                     </button>

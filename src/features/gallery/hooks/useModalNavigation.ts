@@ -1,58 +1,79 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { getUrl } from "@aws-amplify/storage";
 
 type ImageItem = {
-  fullKey: string;
-  thumbnailKey: string;
+    fullKey: string;
 };
 
-export function useModalNavigation(images: ImageItem[]) {
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+export const useModalNavigation = (allImages: ImageItem[]) => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const selectedImage =
-    selectedIndex !== null ? images[selectedIndex] : null;
+    const closeModal = useCallback(() => {
+        setSelectedImage(null);
+    }, []);
 
-  const openImage = useCallback((index: number) => {
-    setSelectedIndex(index);
-  }, []);
+    const navigateNext = useCallback(() => {
+        if (!selectedImage || allImages.length === 0) return;
 
-  const closeModal = useCallback(() => {
-    setSelectedIndex(null);
-  }, []);
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
 
-  const navigateNext = useCallback(() => {
-    setSelectedIndex((prev) => {
-      if (prev === null) return prev;
-      return (prev + 1) % images.length;
-    });
-  }, [images.length]);
+        setSelectedImage(
+            allImages[(currentIndex + 1) % allImages.length].fullKey
+        );
+    }, [allImages, selectedImage]);
 
-  const navigatePrev = useCallback(() => {
-    setSelectedIndex((prev) => {
-      if (prev === null) return prev;
-      return (prev - 1 + images.length) % images.length;
-    });
-  }, [images.length]);
+    const navigatePrev = useCallback(() => {
+        if (!selectedImage || allImages.length === 0) return;
 
-  // keyboard navigation
-  useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (selectedIndex === null) return;
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
 
-      if (e.key === "ArrowRight") navigateNext();
-      if (e.key === "ArrowLeft") navigatePrev();
-      if (e.key === "Escape") closeModal();
-    }
+        setSelectedImage(
+            allImages[
+                (currentIndex - 1 + allImages.length) % allImages.length
+            ].fullKey
+        );
+    }, [allImages, selectedImage]);
 
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [selectedIndex, navigateNext, navigatePrev, closeModal]);
+    useEffect(() => {
+        if (!selectedImage) return;
 
-  return {
-    selectedImage,
-    selectedIndex,
-    openImage,
-    closeModal,
-    navigateNext,
-    navigatePrev
-  };
-}
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") navigateNext();
+            if (e.key === "ArrowLeft") navigatePrev();
+            if (e.key === "Escape") closeModal();
+        };
+
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, [selectedImage, navigateNext, navigatePrev, closeModal]);
+
+    useEffect(() => {
+        if (!selectedImage || allImages.length === 0) return;
+
+        const currentIndex = allImages.findIndex(
+            (img) => img.fullKey === selectedImage
+        );
+
+        const next = allImages[(currentIndex + 1) % allImages.length];
+        if (!next) return;
+
+        getUrl({ key: next.fullKey })
+            .then((r) => {
+                const img = new Image();
+                img.src = String(r?.url ?? r);
+            })
+            .catch(() => {});
+    }, [selectedImage, allImages]);
+
+    return {
+        selectedImage,
+        setSelectedImage,
+        closeModal,
+        navigateNext,
+        navigatePrev,
+    };
+};
