@@ -1,5 +1,4 @@
 import { FC, useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { chunkArray } from "../../utils/chunkArray";
 import ThumbnailTile from "../ThumbnailTile/ThumbnailTile"
 import FullSizeImage from "../FullSizeImage/FullSizeImage";
 import styles from "./CustomStorageImage.module.css";
@@ -12,7 +11,6 @@ interface CustomStorageProps {
 }
 
 const PAGE_SIZE = 40;
-const ROW_SIZE = 6;
 
 const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const { images: allImages, loading: loadingList, fetchImages } = useGalleryImages();
@@ -44,31 +42,23 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         [allImages, visibleCount]
     );
 
-    const rowChunks = useMemo(
-        () => chunkArray(visibleImages, ROW_SIZE),
-        [visibleImages]
-    );
-
     useEffect(() => {
         setVisibleCount(PAGE_SIZE);
         fetchImages(path);
     }, [path, fetchImages]);
 
-
     return (
         <>
             {loadingList && <p className={styles.loading}>Loading...</p>}
-            {rowChunks.map((row, rowIndex) => (
-                <div key={rowIndex} className={styles.galleryRow}>
-                    {row.map((it) => (
-                        <ThumbnailTile
-                            key={it.thumbnailKey}
-                            item={it}
-                            onClick={(fullKey) => setSelectedImage(fullKey)}
-                        />
-                    ))}
-                </div>
-            ))}
+            <div className={styles.grid}>
+                {visibleImages.map((it) => (
+                    <ThumbnailTile
+                        key={it.thumbnailKey}
+                        item={it}
+                        onClick={(fullKey) => setSelectedImage(fullKey)}
+                    />
+                ))}
+            </div>
             <div ref={loaderRef} style={{ height: 1 }} />
             {selectedImage && (
                 <div ref={modalRef} tabIndex={-1} className={styles.modal}>
