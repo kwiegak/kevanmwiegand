@@ -1,5 +1,5 @@
-import { FC, useState, useEffect, useCallback, useRef, useMemo } from "react";
-import ThumbnailTile from "../ThumbnailTile/ThumbnailTile"
+import { FC, useEffect, useRef } from "react";
+import ThumbnailTile from "../ThumbnailTile/ThumbnailTile";
 import FullSizeImage from "../FullSizeImage/FullSizeImage";
 import styles from "./CustomStorageImage.module.css";
 import { useGalleryImages } from "../../hooks/useGalleryImages";
@@ -10,50 +10,49 @@ interface CustomStorageProps {
     path: string;
 }
 
-const PAGE_SIZE = 40;
-
 const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
-    const { images: allImages, loading: loadingList, fetchImages } = useGalleryImages();
-    const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+    const { images, loading, fetchImages, hasMore } = useGalleryImages();
     const modalRef = useRef<HTMLDivElement | null>(null);
-    const hasMore = visibleCount < allImages.length;
+
     const {
         selectedImage,
         setSelectedImage,
         closeModal,
         navigateNext,
         navigatePrev,
-    } = useModalNavigation(allImages);
+    } = useModalNavigation(images);
 
-    const loadMore = useCallback(() => {
-        setVisibleCount((v) =>
-            Math.min(allImages.length, v + PAGE_SIZE)
-        );
-    }, [allImages.length]);
+
+    const loadingRef = useRef(false);
+
+    const handleLoadMore = () => {
+        if (loadingRef.current) return;
+        loadingRef.current = true;
+
+        fetchImages(path).finally(() => {
+            loadingRef.current = false;
+        });
+    };
 
     const { loaderRef } = useInfiniteScroll({
-        onLoadMore: loadMore,
+        onLoadMore: handleLoadMore,
         hasMore,
-        loading: loadingList,
+        loading,
     });
 
-    const visibleImages = useMemo(
-        () => allImages.slice(0, visibleCount),
-        [allImages, visibleCount]
-    );
-
     useEffect(() => {
-        setVisibleCount(PAGE_SIZE);
-        fetchImages(path);
-    }, [path, fetchImages]);
+        fetchImages(path, true);
+    }, [path]);
 
     return (
         <>
-            {loadingList && <p className={styles.loading}>Loading...</p>}
+            {loading && images.length === 0 && (
+                <p className={styles.loading}>Loading...</p>
+            )}
             <div className={styles.grid}>
-                {visibleImages.map((it) => (
+                {images.map((it) => (
                     <ThumbnailTile
-                        key={it.thumbnailKey}
+                        key={it.fullKey}
                         item={it}
                         onClick={(fullKey) => setSelectedImage(fullKey)}
                     />
