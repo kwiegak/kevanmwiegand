@@ -59,7 +59,7 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         [setSelectedImage]
     );
 
-    // ✅ index tracking
+    // index tracking
     const currentIndex = images.findIndex(
         (img) => img.fullKey === selectedImage?.fullKey
     );
@@ -73,8 +73,10 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
     const prevImage = images[prevIndex];
     const nextImage = images[nextIndex];
 
-    // ✅ SWIPE STATE
+    // SWIPE STATE
     const [translateX, setTranslateX] = useState(0);
+    const [isAnimating, setIsAnimating] = useState(false);
+
     const startXRef = useRef(0);
     const isDraggingRef = useRef(false);
     const hasSwipedRef = useRef(false);
@@ -106,27 +108,49 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
 
         const threshold = window.innerWidth * 0.15;
 
+        // 👇 NEW: animate using % instead of px
         if (delta > threshold) {
-            navigatePrev();
+            setIsAnimating(true);
+
+            // slide to previous (0%)
+            setTranslateX(window.innerWidth); // temporary visual push
+
+            setTimeout(() => {
+                navigatePrev();
+
+                // 🔥 critical: reset WITHOUT animation
+                setIsAnimating(false);
+                setTranslateX(0);
+            }, 250);
         } else if (delta < -threshold) {
-            navigateNext();
+            setIsAnimating(true);
+
+            // slide to next (-200%)
+            setTranslateX(-window.innerWidth);
+
+            setTimeout(() => {
+                navigateNext();
+
+                // 🔥 reset cleanly
+                setIsAnimating(false);
+                setTranslateX(0);
+            }, 250);
+        } else {
+            // snap back smoothly
+            setTranslateX(0);
         }
 
-        setTranslateX(0);
-
-        // prevent click firing after swipe
         setTimeout(() => {
             hasSwipedRef.current = false;
         }, 0);
     };
 
-    // ✅ CLICK NAVIGATION (replaces nav overlays)
+    // CLICK NAVIGATION
     const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (hasSwipedRef.current) return;
 
         const target = e.target as HTMLElement;
 
-        // ❌ don't trigger nav when clicking close button
         if (target.closest(`.${styles.closeButton}`)) return;
 
         const x = e.clientX;
@@ -170,29 +194,35 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                         onTouchMove={handleTouchMove}
                         onTouchEnd={handleTouchEnd}
                     >
-                        <img
-                            src={prevImage.fullUrl}
-                            className={styles.sideImage}
-                            alt="previous"
-                        />
-
-                        <img
-                            src={selectedImage.fullUrl}
-                            className={styles.activeImage}
-                            alt={selectedImage.fullKey}
+                        <div
+                            className={styles.carouselTrack}
                             style={{
-                                transform: `translateX(${translateX}px)`,
+                                transform: `translateX(calc(-100% + ${translateX}px))`,
                                 transition: isDraggingRef.current
                                     ? "none"
-                                    : "transform 0.3s ease",
+                                    : isAnimating
+                                        ? "transform 0.25s ease"
+                                        : "none",
                             }}
-                        />
+                        >
+                            <div className={styles.slide}>
+                                <img
+                                    src={prevImage.fullUrl}
+                                    alt="previous"
+                                />
+                            </div>
 
-                        <img
-                            src={nextImage.fullUrl}
-                            className={styles.sideImage}
-                            alt="next"
-                        />
+                            <div className={styles.slide}>
+                                <img
+                                    src={selectedImage.fullUrl}
+                                    alt={selectedImage.fullKey}
+                                />
+                            </div>
+
+                            <div className={styles.slide}>
+                                <img src={nextImage.fullUrl} alt="next" />
+                            </div>
+                        </div>
                     </div>
 
                     <button
