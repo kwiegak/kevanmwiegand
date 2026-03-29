@@ -51,13 +51,12 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
         fetchImages(path, true);
     }, [path, fetchImages]);
 
-    // ✅ Fully stable handler
-    const handleThumbnailClick = useCallback(
-        (item: ImageItem) => {
-            setSelectedImage(item);
-        },
-        [setSelectedImage]
-    );
+    const handleThumbnailClick = useCallback((item: ImageItem) => {
+        const img = new Image();
+        img.src = item.fullUrl;
+
+        setSelectedImage(item);
+    }, [setSelectedImage]);
 
     return (
         <>

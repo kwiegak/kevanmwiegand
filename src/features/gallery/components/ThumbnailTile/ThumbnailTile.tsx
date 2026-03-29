@@ -16,10 +16,17 @@ type Props = {
 const ThumbnailTileComponent: FC<Props> = ({ item, onClick }) => {
     const [loaded, setLoaded] = useState(false);
 
+    // 🔥 Preload full image
+    const handleMouseEnter = () => {
+        const img = new Image();
+        img.src = item.fullUrl;
+    };
+
     return (
         <div
             className={styles.imageWrapper}
             onClick={() => onClick(item)}
+            onMouseEnter={handleMouseEnter}
         >
             {!loaded && <div className={styles.placeholder} />}
 

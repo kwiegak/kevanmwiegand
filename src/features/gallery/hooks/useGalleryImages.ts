@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { list, getUrl } from "@aws-amplify/storage";
+import { list } from "@aws-amplify/storage";
 
 type ImageItem = {
     fullKey: string;
@@ -8,13 +8,13 @@ type ImageItem = {
     thumbnailUrl: string;
 };
 
+const BASE_URL = "https://kevanmwiegand602cade65ed14b9c8cd3291cda903157c36e8-staging.s3.amazonaws.com/public/";
+
 export const useGalleryImages = () => {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [nextToken, setNextToken] = useState<string | undefined>(undefined);
     const [hasMore, setHasMore] = useState(true);
-
-    // ✅ refs to avoid stale closures
     const loadingRef = useRef(false);
     const nextTokenRef = useRef<string | undefined>(undefined);
     const hasMoreRef = useRef(true);
@@ -65,29 +65,22 @@ export const useGalleryImages = () => {
                 thumbMap.set(clean.toLowerCase(), clean);
             });
 
-            const items: ImageItem[] = await Promise.all(
-                fullKeys.map(async (fullKey) => {
-                    const cleanFullKey = fullKey.replace(/^public\//, "");
-                    const fileName = cleanFullKey.split("/").pop() ?? "";
+            const items: ImageItem[] = fullKeys.map((fullKey) => {
+                const cleanFullKey = fullKey.replace(/^public\//, "");
+                const fileName = cleanFullKey.split("/").pop() ?? "";
 
-                    const expectedThumb = `thumbnails/${path}/${fileName}`;
-                    const matchedThumb = thumbMap.get(expectedThumb.toLowerCase());
+                const expectedThumb = `thumbnails/${path}/${fileName}`;
+                const matchedThumb = thumbMap.get(expectedThumb.toLowerCase());
 
-                    const thumbnailKey = matchedThumb ?? cleanFullKey;
+                const thumbnailKey = matchedThumb ?? cleanFullKey;
 
-                    const [thumbUrlResult, fullUrlResult] = await Promise.all([
-                        getUrl({ key: thumbnailKey }),
-                        getUrl({ key: cleanFullKey }),
-                    ]);
-
-                    return {
-                        fullKey: cleanFullKey,
-                        thumbnailKey,
-                        thumbnailUrl: String(thumbUrlResult?.url ?? thumbUrlResult),
-                        fullUrl: String(fullUrlResult?.url ?? fullUrlResult),
-                    };
-                })
-            );
+                return {
+                    fullKey: cleanFullKey,
+                    thumbnailKey,
+                    thumbnailUrl: `${BASE_URL}${thumbnailKey}`,
+                    fullUrl: `${BASE_URL}${cleanFullKey}`,
+                };
+            });
 
             setImages((prev) => {
                 const merged = reset ? items : [...prev, ...items];
