@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { list, getUrl } from "@aws-amplify/storage";
 
 type ImageItem = {
@@ -14,21 +14,30 @@ export const useGalleryImages = () => {
     const [nextToken, setNextToken] = useState<string | undefined>(undefined);
     const [hasMore, setHasMore] = useState(true);
 
-    const fetchImages = useCallback(async (path: string, reset = false) => {
-        if (loading) return;
+    // ✅ refs to avoid stale closures
+    const loadingRef = useRef(false);
+    const nextTokenRef = useRef<string | undefined>(undefined);
+    const hasMoreRef = useRef(true);
 
-        const currentNextToken = reset ? undefined : nextToken;
-        const currentHasMore = reset ? true : hasMore;
+    const fetchImages = useCallback(async (path: string, reset = false) => {
+        if (loadingRef.current) return;
+
+        const currentNextToken = reset ? undefined : nextTokenRef.current;
+        const currentHasMore = reset ? true : hasMoreRef.current;
 
         if (!currentHasMore) return;
 
         try {
+            loadingRef.current = true;
             setLoading(true);
 
             if (reset) {
                 setImages([]);
                 setNextToken(undefined);
                 setHasMore(true);
+
+                nextTokenRef.current = undefined;
+                hasMoreRef.current = true;
             }
 
             const fullResult = await list({
@@ -56,7 +65,6 @@ export const useGalleryImages = () => {
                 thumbMap.set(clean.toLowerCase(), clean);
             });
 
-            // 🚀 NEW: Resolve URLs HERE (not in components)
             const items: ImageItem[] = await Promise.all(
                 fullKeys.map(async (fullKey) => {
                     const cleanFullKey = fullKey.replace(/^public\//, "");
@@ -67,7 +75,6 @@ export const useGalleryImages = () => {
 
                     const thumbnailKey = matchedThumb ?? cleanFullKey;
 
-                    // 🔥 KEY CHANGE: fetch URLs once
                     const [thumbUrlResult, fullUrlResult] = await Promise.all([
                         getUrl({ key: thumbnailKey }),
                         getUrl({ key: cleanFullKey }),
@@ -93,16 +100,19 @@ export const useGalleryImages = () => {
             });
 
             setNextToken(fullResult.nextToken);
+            nextTokenRef.current = fullResult.nextToken;
 
             if (!fullResult.nextToken) {
                 setHasMore(false);
+                hasMoreRef.current = false;
             }
         } catch (err) {
             console.error("Error listing images", err);
         } finally {
             setLoading(false);
+            loadingRef.current = false;
         }
-    }, [loading, nextToken, hasMore]);
+    }, []);
 
     return {
         images,

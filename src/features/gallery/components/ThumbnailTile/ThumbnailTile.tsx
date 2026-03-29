@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, memo } from "react";
 import styles from "./ThumbnailTile.module.css";
 
 type ImageItem = {
@@ -8,16 +8,18 @@ type ImageItem = {
     fullUrl: string;
 };
 
-const ThumbnailTile: FC<{
+type Props = {
     item: ImageItem;
-    onClick: (fullKey: string) => void;
-}> = ({ item, onClick }) => {
+    onClick: (item: ImageItem) => void;
+};
+
+const ThumbnailTileComponent: FC<Props> = ({ item, onClick }) => {
     const [loaded, setLoaded] = useState(false);
 
     return (
         <div
             className={styles.imageWrapper}
-            onClick={() => onClick(item.fullKey)}
+            onClick={() => onClick(item)}
         >
             {!loaded && <div className={styles.placeholder} />}
 
@@ -25,6 +27,7 @@ const ThumbnailTile: FC<{
                 src={item.thumbnailUrl}
                 alt={item.fullKey}
                 loading="lazy"
+                decoding="async"
                 className={`${styles.image} ${loaded ? styles.visible : ""}`}
                 onLoad={() => setLoaded(true)}
                 width="400"
@@ -33,5 +36,7 @@ const ThumbnailTile: FC<{
         </div>
     );
 };
+
+const ThumbnailTile = memo(ThumbnailTileComponent);
 
 export default ThumbnailTile;

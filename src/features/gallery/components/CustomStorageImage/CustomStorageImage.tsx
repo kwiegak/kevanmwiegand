@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useCallback } from "react";
 import ThumbnailTile from "../ThumbnailTile/ThumbnailTile";
 import FullSizeImage from "../FullSizeImage/FullSizeImage";
 import styles from "./CustomStorageImage.module.css";
@@ -31,14 +31,15 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
 
     const loadingRef = useRef(false);
 
-    const handleLoadMore = () => {
-        if (loadingRef.current) return;
+    const handleLoadMore = useCallback(() => {
+        if (loadingRef.current || !hasMore) return;
+
         loadingRef.current = true;
 
         fetchImages(path).finally(() => {
             loadingRef.current = false;
         });
-    };
+    }, [fetchImages, path, hasMore]);
 
     const { loaderRef } = useInfiniteScroll({
         onLoadMore: handleLoadMore,
@@ -48,7 +49,15 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
 
     useEffect(() => {
         fetchImages(path, true);
-    }, [path]);
+    }, [path, fetchImages]);
+
+    // ✅ Fully stable handler
+    const handleThumbnailClick = useCallback(
+        (item: ImageItem) => {
+            setSelectedImage(item);
+        },
+        [setSelectedImage]
+    );
 
     return (
         <>
@@ -61,7 +70,7 @@ const CustomStorageImage: FC<CustomStorageProps> = ({ path }) => {
                     <ThumbnailTile
                         key={it.fullKey}
                         item={it}
-                        onClick={() => setSelectedImage(it)}
+                        onClick={handleThumbnailClick}
                     />
                 ))}
             </div>
