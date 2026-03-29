@@ -10,6 +10,7 @@
     object-fit: contain;
     opacity: 0;
     transition: opacity 0.25s ease;
+    pointer-events: none;
 }
 
 .modalImage.visible {
