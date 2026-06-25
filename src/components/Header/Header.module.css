@@ -1,140 +1,91 @@
-/* Give navbar a subtle shadow and smooth background transition */
 .navbar {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    background: linear-gradient(90deg, #1f1f1f 0%, #2b2b2b 100%);
-    transition: background-color 0.3s ease-in-out;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+    padding: 0.65rem 1.25rem;
 }
 
-/* Brand styling - make it stand out */
-.navbar-brand {
+.brand {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brandName {
+    font-size: 1.6rem;
     font-weight: 700;
-    font-size: 1.3rem;
-    color: #ffffff !important;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    transition: color 0.3s ease;
+    color: #0B2F6B;
 }
 
-.navbar-brand:hover {
-    color: #0d6efd !important;
-    /* Bootstrap primary blue */
+.brandTagline {
+    font-size: 0.85rem;
+    color: #64748B;
+    margin-top: 2px;
 }
 
-/* Dropdown menu styling */
-.dropdown-menu {
-    background-color: #2b2b2b;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    padding: 0.5rem;
+.divider {
+    width: 1px;
+    height: 22px;
+    background: rgba(100, 116, 139, 0.25);
+    margin: 0 1rem;
 }
 
-/* Dropdown items - hover effect */
-.dropdown-item {
-    color: #ffffff !important;
-    border-radius: 6px;
-    padding: 8px 12px;
-    transition: background-color 0.2s ease, transform 0.15s ease;
+.navLink {
+    color: #475569 !important;
+    font-weight: 500;
+    margin-left: 1rem;
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-.dropdown-item:hover {
-    background-color: rgba(13, 110, 253, 0.2);
-    transform: translateX(4px);
+.navLink:hover {
+    color: #2563EB !important;
+    transform: translateY(-1px);
 }
 
-/* Icons next to social links - make them pop */
-.dropdown-item svg {
-    vertical-align: middle;
-    font-size: 1.1rem;
-    opacity: 0.8;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+.socialLinks {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: 1.5rem;
 }
 
-.dropdown-item:hover svg {
-    opacity: 1;
-    transform: scale(1.1);
+.iconLink {
+    color: #0B2F6B;
+    font-size: 1.15rem;
+    transition: all 0.2s ease;
 }
 
-/* Navbar toggle (hamburger) styling */
-.navbar-toggler {
+.iconLink:hover {
+    color: #2563EB;
+    transform: translateY(-1px);
+}
+
+/* Bootstrap dropdown overrides */
+
+:global(.dropdown-menu) {
     border: none;
-    outline: none;
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
-.navbar-toggler:focus {
+:global(.dropdown-item) {
+    border-radius: 8px;
+    padding: 0.65rem 1rem;
+}
+
+:global(.dropdown-item:hover) {
+    background-color: #EAF3FF;
+    color: #2563EB;
+}
+
+:global(.navbar-toggler) {
+    border: none;
     box-shadow: none;
 }
 
-.navbar-toggler-icon {
-    filter: invert(1);
-}
-
-/* Add this to Header.module.css */
-.navbar.scrolled {
-    background: rgba(31, 31, 31, 0.95);
-    backdrop-filter: blur(6px);
-}
-
-/* ---------- Dropdown Animation ---------- */
-
-/* Start hidden with slight upward offset */
-.dropdown-menu {
-    background-color: #2b2b2b;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-    padding: 0.5rem;
-    opacity: 0;
-    transform: translateY(-8px);
-    visibility: hidden;
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
-}
-
-/* When open, fade in and slide down */
-.show>.dropdown-menu {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-    transition-delay: 0s;
-    /* make it appear immediately */
-}
-
-/* Dropdown items */
-.dropdown-item {
-    color: #ffffff !important;
-    border-radius: 6px;
-    padding: 8px 12px;
-    transition: background-color 0.2s ease, transform 0.15s ease;
-}
-
-.dropdown-item:hover {
-    background-color: rgba(13, 110, 253, 0.2);
-    transform: translateX(4px);
-}
-
-/* Icons - animate on hover */
-.dropdown-item svg {
-    vertical-align: middle;
-    font-size: 1.1rem;
-    opacity: 0.8;
-    transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.dropdown-item:hover svg {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* Toggler button */
-.navbar-toggler {
-    border: none;
-    outline: none;
-}
-
-.navbar-toggler:focus {
+:global(.navbar-toggler:focus) {
     box-shadow: none;
-}
-
-.navbar-toggler-icon {
-    filter: invert(1);
 }

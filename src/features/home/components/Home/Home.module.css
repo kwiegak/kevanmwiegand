@@ -1,0 +1,85 @@
+.home {
+    padding-top: 90px;
+}
+
+.hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        linear-gradient(rgba(11, 47, 107, .65),
+            rgba(11, 47, 107, .65)),
+        url('../../../../../public/hero.png');
+
+    background-size: cover;
+    background-position: center;
+
+    color: white;
+    text-align: center;
+}
+
+.heroContent {
+    max-width: 800px;
+    padding: 2rem;
+}
+
+.heroContent h1 {
+    font-size: 4rem;
+    margin-bottom: .5rem;
+}
+
+.heroContent h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.heroContent p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+}
+
+.ctaButton {
+    display: inline-block;
+    margin-top: 1.5rem;
+    padding: 14px 28px;
+    background: white;
+    color: #0B2F6B;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    text-align: left;
+}
+
+.section h2 {
+    color: #0B2F6B;
+    margin-bottom: 1rem;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.badges span {
+    background: #EAF3FF;
+    color: #0B2F6B;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.link {
+    color: #2563EB;
+    text-decoration: none;
+    font-weight: 600;
+}

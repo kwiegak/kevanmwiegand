@@ -1,79 +1,96 @@
 import { FC, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.css';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import { FaGithub, FaYoutube } from "react-icons/fa";
 import { photoCollections } from "../../config/photoCollections";
 import styles from './Header.module.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
-interface HeaderProps { }
-
-const Header: FC<HeaderProps> = () => {
+const Header: FC = () => {
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
 
-  const handleSelect = (path: string) => {
+const closeMenu = () => setExpanded(false);
+
+const handleSelect = (path: string) => {
     navigate(path);
-    setExpanded(false);
-  };
+    closeMenu();
+};
 
-  const handleExternalLink = (url: string) => {
+const handleExternalLink = (url: string) => {
     window.open(url, "_blank");
-    setExpanded(false);
-  };
+    closeMenu();
+};
 
-  return (
+return (
     <Navbar
-      bg="dark"
-      data-bs-theme="dark"
-      fixed="top"
-      expand="lg"
-      expanded={expanded}
-      className={styles.navbar}
+        fixed="top"
+        expand="lg"
+        expanded={expanded}
+        className={styles.navbar}
     >
-      <div className="container-fluid">
-        <Navbar.Brand
-          as={Link}
-          to="/"
-          className={styles["navbar-brand"]}
-          onClick={() => setExpanded(false)}
+        <div className="container-fluid">
+
+      <Navbar.Brand
+        as={Link}
+        to="/"
+        className={styles.brand}
+        onClick={closeMenu}
+      >
+        <span className={styles.brandName}>
+          Kevan Wiegand
+        </span>
+
+        <span className={styles.brandTagline}>
+          Software Engineer • Photographer
+        </span>
+      </Navbar.Brand>
+      <div className={styles.socialLinks}>
+        <a
+          href="https://github.com/kwiegak"
+          target="_blank"
+          rel="noreferrer"
+          className={styles.iconLink}
         >
-          Photo Gallery
-        </Navbar.Brand>
+          <FaGithub />
+        </a>
 
-        <Navbar.Toggle
-          aria-controls="navbar-nav"
-          onClick={() => setExpanded(expanded ? false : true)}
-        />
-
-        <Navbar.Collapse id="navbar-nav">
-          <Nav className="me-auto">
-            <NavDropdown title="Themes" id="basic-nav-dropdown">
-              {photoCollections.map((c) => (
-                <NavDropdown.Item
-                  key={c.key}
-                  onClick={() => handleSelect(`/${c.key}`)}
-                >
-                  {c.label}
-                </NavDropdown.Item>
-              ))}
-            </NavDropdown>
-
-            <NavDropdown title="Kevan Wiegand" id="social-nav-dropdown">
-              <NavDropdown.Item onClick={() => handleExternalLink('https://www.youtube.com/channel/UCpE3knGP4Fh9YFXpD49c8iw')}>
-                <FaYoutube className="me-2" /> YouTube
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => handleExternalLink('https://www.github.com/kwiegak')}>
-                <FaGithub className="me-2" /> GitHub
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
+        <a
+          href="https://www.youtube.com/channel/UCpE3knGP4Fh9YFXpD49c8iw"
+          target="_blank"
+          rel="noreferrer"
+          className={styles.iconLink}
+        >
+          <FaYoutube />
+        </a>
       </div>
+            <Navbar.Toggle
+                aria-controls="navbar-nav"
+                onClick={() => setExpanded(!expanded)}
+            />
+
+            <Navbar.Collapse id="navbar-nav">
+        <Nav className="ms-auto align-items-lg-center">
+          {photoCollections.map((c) => (
+            <Nav.Link
+              key={c.key}
+              onClick={() => handleSelect(`/${c.key}`)}
+              className={styles.navLink}
+            >
+              {c.label}
+            </Nav.Link>
+          ))}
+          
+        </Nav>
+
+            </Navbar.Collapse>
+
+        </div>
     </Navbar>
-  );
+);
+
+
 };
 
 export default Header;
