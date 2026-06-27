@@ -23,7 +23,7 @@ const Home: FC = () => {
                 </p>
 
                 <Link
-                    to="/thailand"
+                    to="/dallas"
                     className={styles.ctaButton}
                 >
                     View Photography

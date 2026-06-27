@@ -24,62 +24,118 @@
     margin-top: 2px;
 }
 
-.divider {
-    width: 1px;
-    height: 22px;
-    background: rgba(100, 116, 139, 0.25);
-    margin: 0 1rem;
-}
+/* -------------------------- */
+/* Navigation */
+/* -------------------------- */
 
 .navLink {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+
     color: #475569 !important;
+
     font-weight: 500;
-    margin-left: 1rem;
+
+    margin-left: 0.65rem;
+
+    padding: 0.5rem 0.95rem !important;
+
+    border-radius: 999px;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.20s ease,
+        box-shadow 0.25s ease;
+
     white-space: nowrap;
-    transition: all 0.2s ease;
 }
 
 .navLink:hover {
+
     color: #2563EB !important;
+
+    background: #F5F9FF;
+
     transform: translateY(-1px);
+
 }
 
+.navLinkActive {
+
+    background: #EAF3FF;
+
+    color: #0B2F6B !important;
+
+    font-weight: 600;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(37, 99, 235, 0.15);
+
+}
+
+.activeCamera {
+
+    font-size: 0.8rem;
+
+    color: #2563EB;
+
+    animation: fadeCamera 0.25s ease;
+
+}
+
+@keyframes fadeCamera {
+
+    from {
+        opacity: 0;
+        transform: scale(.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+}
+
+/* -------------------------- */
+/* Social Icons */
+/* -------------------------- */
+
 .socialLinks {
+
     display: flex;
+
     align-items: center;
+
     gap: 0.75rem;
+
     margin-left: 1.5rem;
+
 }
 
 .iconLink {
+
     color: #0B2F6B;
+
     font-size: 1.15rem;
-    transition: all 0.2s ease;
+
+    transition: all .2s ease;
+
 }
 
 .iconLink:hover {
+
     color: #2563EB;
+
     transform: translateY(-1px);
+
 }
 
-/* Bootstrap dropdown overrides */
-
-:global(.dropdown-menu) {
-    border: none;
-    border-radius: 12px;
-    padding: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
-}
-
-:global(.dropdown-item) {
-    border-radius: 8px;
-    padding: 0.65rem 1rem;
-}
-
-:global(.dropdown-item:hover) {
-    background-color: #EAF3FF;
-    color: #2563EB;
-}
+/* -------------------------- */
+/* Bootstrap Overrides */
+/* -------------------------- */
 
 :global(.navbar-toggler) {
     border: none;
@@ -88,4 +144,21 @@
 
 :global(.navbar-toggler:focus) {
     box-shadow: none;
+}
+
+:global(.dropdown-menu) {
+    border: none;
+    border-radius: 12px;
+    padding: .5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, .12);
+}
+
+:global(.dropdown-item) {
+    border-radius: 8px;
+    padding: .65rem 1rem;
+}
+
+:global(.dropdown-item:hover) {
+    background: #EAF3FF;
+    color: #2563EB;
 }
