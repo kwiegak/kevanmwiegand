@@ -50,6 +50,20 @@ const Home: FC = () => {
 
         <section className={styles.section}>
 
+            <h2>Career Highlights</h2>
+
+            <ul>
+                <li>Nearly 10 years of software engineering experience</li>
+                <li>Enterprise banking platforms</li>
+                <li>Cloud modernization initiatives</li>
+                <li>Full stack application development</li>
+                <li>AWS and Kubernetes deployments</li>
+            </ul>
+
+        </section>
+        
+        <section className={styles.section}>
+
             <h2>Technologies</h2>
 
             <div className={styles.badges}>
@@ -64,39 +78,6 @@ const Home: FC = () => {
             </div>
 
         </section>
-
-        <section className={styles.section}>
-
-            <h2>Photography</h2>
-
-            <p>
-                Travel photography from destinations across
-                the United States and Southeast Asia.
-            </p>
-
-            <Link
-                to="/gallery/thailand"
-                className={styles.link}
-            >
-                Explore Galleries →
-            </Link>
-
-        </section>
-
-        <section className={styles.section}>
-
-            <h2>Career Highlights</h2>
-
-            <ul>
-                <li>Nearly 10 years of software engineering experience</li>
-                <li>Enterprise banking platforms</li>
-                <li>Cloud modernization initiatives</li>
-                <li>Full stack application development</li>
-                <li>AWS and Kubernetes deployments</li>
-            </ul>
-
-        </section>
-
     </div>
     );
 
