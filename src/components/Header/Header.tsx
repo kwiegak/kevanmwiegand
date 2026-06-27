@@ -47,27 +47,7 @@ const Header: FC = () => {
 
         </Navbar.Brand>
 
-        <div className={styles.socialLinks}>
 
-          <a
-            href="https://github.com/kwiegak"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.iconLink}
-          >
-            <FaGithub />
-          </a>
-
-          <a
-            href="https://www.youtube.com/channel/UCpE3knGP4Fh9YFXpD49c8iw"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.iconLink}
-          >
-            <FaYoutube />
-          </a>
-
-        </div>
 
         <Navbar.Toggle
           aria-controls="navbar-nav"
